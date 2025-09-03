@@ -40,11 +40,12 @@ function Home() {
   const { user } = useAuth();
 
   return (
-    <div>
+    <div className="dark:bg-black dark:text-white">
       {/* Hero Section with Animated Entrance */}
       <section className="bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 py-24 relative overflow-hidden shadow-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <motion.div
+         <div className="absolute -bottom-32 -right-32 w-[32rem] h-[32rem] bg-gradient-to-br from-indigo-400 to-purple-600 opacity-30 rounded-full blur-3xl pointer-events-none z-0"></div>
+    <motion.div
             initial={{ opacity: 0, y: -40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.1 }}
@@ -52,7 +53,7 @@ function Home() {
           >
             <h1 className="text-5xl md:text-6xl font-extrabold text-white mb-6 drop-shadow-2xl">
               Your&nbsp;
-              <span className="bg-gradient-to-r from-fuchsia-400 via-blue-300 to-cyan-300 bg-clip-text text-transparent animate-gradient">
+              <span className="bg-gradient-to-r from-fuchsia-500 via-blue-300 to-cyan-300 bg-clip-text text-transparent animate-gradient">
                 Personalized
               </span>
               &nbsp;Educational Journey Guide
@@ -195,7 +196,7 @@ function Home() {
           >
             <Link
               to="/signup"
-              className="px-10 py-4 text-xl rounded-full font-bold bg-white text-indigo-600 shadow-lg hover:bg-indigo-50 hover:text-pink-600 hover:scale-105 transition ease-in-out duration-200"
+              className="px-10 py-4 text-xl rounded-full font-bold bg-white text-indigo-600 shadow-lg hover:bg-indigo-50 hover:text-pink-500 hover:scale-105 transition ease-in-out duration-200"
             >
               Sign Up Now
             </Link>

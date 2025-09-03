@@ -4,7 +4,7 @@ function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <h3 className="text-xl font-bold mb-4">Saarthi Advisor</h3>
+            <h3 className="text-xl font-bold mb-4">sAarthI Advisor</h3>
             <p className="text-gray-300">
               Guiding students to make informed academic and career decisions.
             </p>
