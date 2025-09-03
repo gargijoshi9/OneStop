@@ -1,21 +1,30 @@
 import React, { useState, useRef } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { UserCircleIcon, EnvelopeIcon, PhoneIcon, PencilSquareIcon, CameraIcon, CheckIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import {
+  UserCircleIcon,
+  EnvelopeIcon,
+  PhoneIcon,
+  PencilSquareIcon,
+  CameraIcon,
+  CheckIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/solid";
 
 function Settings() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [editMode, setEditMode] = useState(false);
+  const fileRef = useRef(null);
+
   const [details, setDetails] = useState({
     name: user?.name || "",
     email: user?.email || "",
-    phone: user?.phone || "",
-    bio: user?.bio || "",
+    phone: user?.mobile || "",
+    address: user?.address || "",
     photo: user?.photoURL || "",
   });
   const [photoFile, setPhotoFile] = useState(null);
-  const fileRef = useRef();
 
   const handleLogout = () => {
     logout();
@@ -31,17 +40,17 @@ function Settings() {
     const file = e.target.files[0];
     if (file && file.type.startsWith("image/")) {
       setPhotoFile(file);
-      setDetails(prev => ({
+      setDetails((prev) => ({
         ...prev,
-        photo: URL.createObjectURL(file)
+        photo: URL.createObjectURL(file),
       }));
     }
   };
 
   const handleSave = (e) => {
     e.preventDefault();
+    // TODO: save profile updates to backend here
     setEditMode(false);
-    // Here you should send updated details/photo to your backend.
   };
 
   const handleCancel = () => {
@@ -49,8 +58,8 @@ function Settings() {
     setDetails({
       name: user?.name || "",
       email: user?.email || "",
-      phone: user?.phone || "",
-      bio: user?.bio || "",
+      phone: user?.mobile || "",
+      address: user?.address || "",
       photo: user?.photoURL || "",
     });
     setPhotoFile(null);
@@ -59,7 +68,9 @@ function Settings() {
   if (!user) {
     return (
       <div className="max-w-xl mx-auto mt-24 p-10 bg-white/90 dark:bg-gray-900/90 rounded-2xl shadow-xl text-center">
-        <h2 className="text-3xl font-extrabold mb-4 text-gray-800 dark:text-cyan-200">Account Settings</h2>
+        <h2 className="text-3xl font-extrabold mb-4 text-gray-800 dark:text-cyan-200">
+          Account Settings
+        </h2>
         <p className="text-gray-700 dark:text-gray-300">Please log in to view your settings.</p>
       </div>
     );
@@ -68,7 +79,6 @@ function Settings() {
   return (
     <div className="min-h-[60vh] flex items-center justify-center bg-gradient-to-b from-black to-[#101226] py-12">
       <div className="backdrop-blur-2xl bg-black/90 dark:bg-black/90 border border-gray-700 rounded-2xl shadow-2xl max-w-lg w-full p-8 relative">
-        {/* Edit/Save Buttons */}
         {!editMode ? (
           <button
             className="absolute top-5 right-5 text-indigo-400 hover:text-indigo-200 transition"
@@ -100,11 +110,10 @@ function Settings() {
           {/* Profile Photo */}
           <div className="flex flex-col items-center gap-2 mb-4">
             <div
-              className="relative w-24 h-24 group rounded-full overflow-hidden bg-gray-800 border-4 border-indigo-500 shadow"
+              className="relative w-24 h-24 group rounded-full overflow-hidden bg-gray-800 border-4 border-indigo-500 shadow cursor-pointer"
               onClick={() => {
                 if (editMode) fileRef.current.click();
               }}
-              style={{ cursor: editMode ? 'pointer' : 'default' }}
             >
               {details.photo ? (
                 <img src={details.photo} alt="Profile" className="object-cover w-full h-full" />
@@ -119,7 +128,7 @@ function Settings() {
                     ref={fileRef}
                     type="file"
                     accept="image/*"
-                    className="absolute inset-0 opacity-0"
+                    className="absolute inset-0 opacity-0 cursor-pointer"
                     onChange={handlePhotoChange}
                   />
                 </div>
@@ -134,79 +143,82 @@ function Settings() {
             Account Settings
           </h2>
 
-          {/* Details */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-3 text-white">
-              <UserCircleIcon className="h-6 w-6 text-indigo-400" />
-              <span className="font-semibold">Name:</span>
-              {editMode ? (
+          {/* Details Table */}
+          {!editMode ? (
+            <table className="w-full text-white text-left border border-gray-600 rounded-lg">
+              <tbody>
+                <tr className="border-b border-gray-600">
+                  <th className="p-3 font-semibold">Name</th>
+                  <td className="p-3">{details.name}</td>
+                </tr>
+                <tr className="border-b border-gray-600">
+                  <th className="p-3 font-semibold">Email</th>
+                  <td className="p-3">{details.email}</td>
+                </tr>
+                <tr className="border-b border-gray-600">
+                  <th className="p-3 font-semibold">Phone</th>
+                  <td className="p-3">{details.phone || <span className="text-gray-400">Not provided</span>}</td>
+                </tr>
+                <tr>
+                  <th className="p-3 font-semibold">Address</th>
+                  <td className="p-3">{details.address || <span className="text-gray-400">Not provided</span>}</td>
+                </tr>
+              </tbody>
+            </table>
+          ) : (
+            <div className="space-y-4">
+              <div>
+                <label className="block mb-1 font-semibold text-white" htmlFor="name">Name</label>
                 <input
+                  id="name"
                   name="name"
                   value={details.name}
                   onChange={handleEditChange}
-                  className="ml-2 bg-gray-800 text-white rounded px-3 py-1 border border-gray-600 focus:outline-indigo-400"
+                  className="w-full rounded px-3 py-2 text-black"
                   required
                 />
-              ) : (
-                <span className="ml-2">{details.name}</span>
-              )}
-            </div>
-            <div className="flex items-center gap-3 text-white">
-              <EnvelopeIcon className="h-6 w-6 text-pink-400" />
-              <span className="font-semibold">Email:</span>
-              {editMode ? (
+              </div>
+              <div>
+                <label className="block mb-1 font-semibold text-white" htmlFor="email">Email</label>
                 <input
+                  id="email"
                   type="email"
                   name="email"
                   value={details.email}
                   onChange={handleEditChange}
-                  className="ml-2 bg-gray-800 text-white rounded px-3 py-1 border border-gray-600 focus:outline-pink-400"
+                  className="w-full rounded px-3 py-2 text-black"
                   required
                 />
-              ) : (
-                <span className="ml-2">{details.email}</span>
-              )}
-            </div>
-            <div className="flex items-center gap-3 text-white">
-              <PhoneIcon className="h-6 w-6 text-green-400" />
-              <span className="font-semibold">Phone:</span>
-              {editMode ? (
+              </div>
+              <div>
+                <label className="block mb-1 font-semibold text-white" htmlFor="phone">Phone</label>
                 <input
+                  id="phone"
                   type="tel"
                   name="phone"
                   value={details.phone}
                   onChange={handleEditChange}
-                  className="ml-2 bg-gray-800 text-white rounded px-3 py-1 border border-gray-600 focus:outline-green-400"
+                  className="w-full rounded px-3 py-2 text-black"
                   pattern="[0-9]{10,15}"
                 />
-              ) : (
-                <span className="ml-2">{details.phone || <span className="text-gray-400">Not provided</span>}</span>
-              )}
-            </div>
-            <div className="flex items-start gap-3 text-white">
-              <span className="font-semibold pt-1">
-                Bio:
-              </span>
-              {editMode ? (
-                <textarea
-                  name="bio"
-                  value={details.bio}
+              </div>
+              <div>
+                <label className="block mb-1 font-semibold text-white" htmlFor="address">Address</label>
+                <input
+                  id="address"
+                  name="address"
+                  value={details.address}
                   onChange={handleEditChange}
-                  maxLength={120}
-                  rows={2}
-                  className="ml-2 bg-gray-800 text-white rounded px-3 py-1 border border-gray-600 focus:outline-indigo-400 resize-none w-full"
-                  placeholder="Tell us a little about yourself..."
+                  className="w-full rounded px-3 py-2 text-black"
                 />
-              ) : (
-                <span className="ml-2">{details.bio || <span className="text-gray-400">No bio set</span>}</span>
-              )}
+              </div>
             </div>
-          </div>
+          )}
 
           <button
             type="button"
             onClick={handleLogout}
-            className="w-full inline-block text-center bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white font-medium py-3 rounded-lg shadow mt-5 transition"
+            className="w-full mt-6 inline-block text-center bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white font-medium py-3 rounded-lg shadow transition"
           >
             Logout
           </button>
