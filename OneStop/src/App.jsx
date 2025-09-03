@@ -41,10 +41,24 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <Layout />
+        <div className="dark bg-black text-white flex flex-col min-h-screen">
+          <Navbar />
+          <main className="flex-grow">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/aptitude-test" element={<AptitudeTest />} />
+              <Route path="/course-explorer" element={<CourseExplorer />} />
+              <Route path="/college-directory" element={<CollegeDirectory />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/timeline" element={<Timeline />} />
+              <Route path="/settings" element={<Settings />} />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
       </AuthProvider>
     </Router>
   );
 }
-
 export default App;
