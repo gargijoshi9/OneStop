@@ -62,9 +62,12 @@ function Home() {
   return (
     <div className="bg-black text-white transition-colors duration-500">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-[#10101a] via-black to-black py-24 relative overflow-hidden">
+      <section className="bg-gradient-to-br from-gray-900 via-black to-blue-900/50 py-24 relative overflow-hidden">
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <div className="absolute -top-40 -right-40 w-96 h-96 bg-gradient-to-br from-purple-500 to-blue-900 rounded-full opacity-20 blur-3xl animate-pulse-slow" />
+          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-br from-pink-500 to-purple-900 rounded-full opacity-20 blur-3xl animate-pulse-slower" />
+        </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="absolute -bottom-32 -right-32 w-[32rem] h-[32rem] bg-gradient-to-br from-indigo-400 to-purple-600 dark:from-indigo-900 dark:to-purple-900 opacity-30 rounded-full blur-3xl pointer-events-none" />
           <motion.div
             initial={{ opacity: 0, y: -40 }}
             animate={{ opacity: 1, y: 0 }}
@@ -220,7 +223,7 @@ function Home() {
           </p>
           <Link
             to="/signup"
-            className="inline-block px-10 py-4 rounded-full bg-white text-purple-700 font-semibold shadow-lg hover:bg-purple-300 transition"
+            className="inline-block px-10 py-4 rounded-full bg-white text-purple-700 font-semibold shadow-lg hover:bg-purple-100 transition"
           >
             Sign Up Now
           </Link>
