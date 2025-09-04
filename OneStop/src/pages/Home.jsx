@@ -64,8 +64,8 @@ function Home() {
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-gray-900 via-black to-blue-900/50 py-24 relative overflow-hidden">
         <div className="absolute inset-0 z-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 w-96 h-96 bg-gradient-to-br from-purple-500 to-blue-900 rounded-full opacity-20 blur-3xl animate-pulse-slow" />
-          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-br from-pink-500 to-purple-900 rounded-full opacity-20 blur-3xl animate-pulse-slower" />
+          <div className="absolute -top-40 -right-40 w-96 h-96 bg-gradient-to-br from-purple-600 to-blue-800 rounded-full opacity-20 blur-3xl animate-float" />
+          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-br from-pink-600 to-purple-800 rounded-full opacity-20 blur-3xl animate-float-delay" />
         </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div
