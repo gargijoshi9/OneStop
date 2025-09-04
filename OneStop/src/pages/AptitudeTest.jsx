@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import Login from "./Login"; // Assuming you have a Login component
 
 function AptitudeTest() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -8,8 +10,15 @@ function AptitudeTest() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [questions, setQuestions] = useState([]);
+  const { user } = useAuth(); // Get the user object from the AuthContext
 
   useEffect(() => {
+    if (!user) {
+      // User is not logged in, so we don't need to fetch questions yet.
+      setLoading(false);
+      return;
+    }
+
     const fetchQuestions = async () => {
       try {
         await new Promise((r) => setTimeout(r, 600)); // simulate delay
@@ -210,7 +219,7 @@ function AptitudeTest() {
     };
 
     fetchQuestions();
-  }, []);
+  }, [user]);
 
   const handleAnswer = (questionId, answerIndex) => {
     setAnswers((prev) => ({ ...prev, [questionId]: answerIndex }));
@@ -328,6 +337,11 @@ function AptitudeTest() {
     };
   };
 
+  if (!user) {
+    // If the user is not logged in, render the login component.
+    return <Login />;
+  }
+
   if (loading) {
     return (
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -360,10 +374,10 @@ function AptitudeTest() {
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="text-center mb-10">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
+        <h1 className="text-3xl font-bold text-gray-100 mb-4">
           Aptitude & Interest Assessment
         </h1>
-        <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+        <p className="text-lg text-gray-500 max-w-3xl mx-auto">
           Discover which academic path aligns with your natural abilities and
           interests by answering the following questions
         </p>
