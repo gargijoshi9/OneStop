@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { motion } from 'framer-motion';
 
 function Timeline() {
   const { currentUser } = useAuth();
   const [events, setEvents] = useState([]);
   const [newEvent, setNewEvent] = useState({ title: '', date: '', description: '', type: 'admission' });
   const [filter, setFilter] = useState('all');
-  
+
   // Event types
   const eventTypes = [
     { id: 'admission', label: 'Admission Dates', color: 'blue' },
@@ -14,8 +15,8 @@ function Timeline() {
     { id: 'exam', label: 'Entrance Exams', color: 'red' },
     { id: 'counseling', label: 'Counseling Sessions', color: 'purple' }
   ];
-  
-  // Demo data - in a real app, this would come from a database
+
+  // Demo data
   useEffect(() => {
     const demoEvents = [
       {
@@ -61,205 +62,159 @@ function Timeline() {
         type: 'exam'
       }
     ];
-    
     setEvents(demoEvents);
   }, []);
-  
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setNewEvent({
-      ...newEvent,
-      [name]: value
-    });
+    setNewEvent(prev => ({ ...prev, [name]: value }));
   };
-  
+
   const handleAddEvent = (e) => {
     e.preventDefault();
-    
-    // Validate inputs
-    if (!newEvent.title || !newEvent.date) {
-      return;
-    }
-    
-    // Add new event
+    if (!newEvent.title || !newEvent.date) return;
+
     const event = {
       id: Date.now(),
-      title: newEvent.title,
-      date: newEvent.date,
-      description: newEvent.description,
-      type: newEvent.type
+      ...newEvent
     };
-    
-    setEvents([...events, event]);
-    
-    // Reset form
+    setEvents(prev => [...prev, event]);
     setNewEvent({ title: '', date: '', description: '', type: 'admission' });
   };
-  
-  // Sort events by date
-  const sortedEvents = [...events].sort((a, b) => new Date(a.date) - new Date(b.date));
-  
-  // Filter events by type
-  const filteredEvents = filter === 'all' 
-    ? sortedEvents 
-    : sortedEvents.filter(event => event.type === filter);
-  
-  // Format date for display
-  const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
+
+  const sortedEvents = [...events].sort((a,b) => new Date(a.date) - new Date(b.date));
+  const filteredEvents = filter === 'all' ? sortedEvents : sortedEvents.filter(e => e.type === filter);
+
+  const formatDate = dateStr => new Date(dateStr).toLocaleDateString(undefined, { year: 'numeric', month:'long', day:'numeric' });
+
+  const cardVariants = {
+    offscreen: { opacity: 0, y: 30, scale: 0.9 },
+    onscreen: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.8, type: 'spring' } }
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="text-center mb-12">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">Timeline Tracker</h1>
-        <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-          Stay informed about important dates for admissions, scholarships, entrance exams, and counseling sessions
-        </p>
-      </div>
-      
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Timeline Events Section */}
-        <div className="lg:col-span-2">
-          <div className="bg-white shadow-md rounded-lg overflow-hidden">
-            <div className="border-b border-gray-200 p-4 flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-gray-800">Upcoming Events</h2>
-              
-              <div>
-                <select
-                  className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                  value={filter}
-                  onChange={(e) => setFilter(e.target.value)}
+    <div className="min-h-screen bg-black text-white px-6 py-12 transition-colors duration-500">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-extrabold mb-4">Timeline Tracker</h1>
+          <p className="text-gray-400 max-w-xl mx-auto">
+            Stay updated with key academic dates: admissions, scholarships, entrance exams and counseling.
+          </p>
+        </div>
+        </div>
+
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Events list */}
+          <div className="lg:col-span-2 bg-gray-900 rounded-lg shadow-md p-6 overflow-auto max-h-[600px]">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-semibold">Upcoming Events</h2>
+              <select
+                className="bg-gray-800 border border-gray-700 text-white rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                value={filter}
+                onChange={e => setFilter(e.target.value)}
+              >
+                <option value="all">All Events</option>
+                {eventTypes.map(type => (
+                  <option key={type.id} value={type.id}>{type.label}</option>
+                ))}
+              </select>
+            </div>
+
+            {filteredEvents.length === 0 ? (
+              <p className="text-center text-gray-500 py-20">No events found for selected filter.</p>
+            ) : (
+              filteredEvents.map(event => (
+                <motion.div
+                  key={event.id}
+                  variants={cardVariants}
+                  initial="offscreen"
+                  whileInView="onscreen"
+                  viewport={{ once: true, amount: 0.2 }}
+                  className="bg-gray-800 rounded-md p-4 mb-4 shadow-md cursor-pointer hover:bg-gray-700 transition"
                 >
-                  <option value="all">All Events</option>
+                  <div className="flex items-center space-x-3">
+                    <span className={`w-4 h-4 rounded-full bg-${event.type === 'admission' ? 'blue' : event.type === 'scholarship' ? 'green' : event.type === 'exam' ? 'red' : 'purple'}-500`}></span>
+                    <h3 className="text-lg font-semibold">{event.title}</h3>
+                    <time className="ml-auto text-gray-400">{formatDate(event.date)}</time>
+                  </div>
+                  <p className="mt-2 text-gray-300">{event.description}</p>
+                  <span className={`inline-block mt-2 px-2 py-1 rounded bg-${event.type === 'admission' ? 'blue' : event.type === 'scholarship' ? 'green' : event.type === 'exam' ? 'red' : 'purple'}-600 text-xs`}>
+                    {eventTypes.find(t => t.id === event.type)?.label}
+                  </span>
+                </motion.div>
+              ))
+            )}
+          </div>
+
+          {/* Add Event form */}
+          <div className="bg-gray-900 rounded-lg shadow-md p-6">
+            <h2 className="text-xl font-semibold mb-4">Add New Event</h2>
+            <form onSubmit={handleAddEvent} className="space-y-4">
+              <div>
+                <label className="block mb-1">Title</label>
+                <input
+                  type="text"
+                  name="title"
+                  value={newEvent.title}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full p-2 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                />
+              </div>
+              <div>
+                <label className="block mb-1">Date</label>
+                <input
+                  type="date"
+                  name="date"
+                  value={newEvent.date}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full p-2 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                />
+              </div>
+              <div>
+                <label className="block mb-1">Type</label>
+                <select
+                  name="type"
+                  value={newEvent.type}
+                  onChange={handleInputChange}
+                  className="w-full p-2 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                >
                   {eventTypes.map(type => (
                     <option key={type.id} value={type.id}>{type.label}</option>
                   ))}
                 </select>
               </div>
-            </div>
-            
-            <div className="divide-y divide-gray-200">
-              {filteredEvents.length > 0 ? (
-                filteredEvents.map(event => (
-                  <div key={event.id} className="p-4 hover:bg-gray-50">
-                    <div className="flex items-start">
-                      <div className={`mt-1 h-4 w-4 rounded-full bg-${event.type === 'admission' ? 'blue' : event.type === 'scholarship' ? 'green' : event.type === 'exam' ? 'red' : 'purple'}-500 flex-shrink-0`}></div>
-                      <div className="ml-3 flex-1">
-                        <div className="flex justify-between items-start">
-                          <h3 className="text-lg font-medium text-gray-900">{event.title}</h3>
-                          <span className="text-sm text-gray-500">{formatDate(event.date)}</span>
-                        </div>
-                        <p className="mt-1 text-gray-600">{event.description}</p>
-                        <div className="mt-2">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            event.type === 'admission' ? 'bg-blue-100 text-blue-800' :
-                            event.type === 'scholarship' ? 'bg-green-100 text-green-800' :
-                            event.type === 'exam' ? 'bg-red-100 text-red-800' :
-                            'bg-purple-100 text-purple-800'
-                          }`}>
-                            {eventTypes.find(t => t.id === event.type)?.label}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="p-8 text-center">
-                  <p className="text-gray-500">No events found for the selected filter.</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-        
-        {/* Add Event Form Section */}
-        <div className="lg:col-span-1">
-          <div className="bg-white shadow-md rounded-lg overflow-hidden">
-            <div className="border-b border-gray-200 p-4">
-              <h2 className="text-xl font-semibold text-gray-800">Add New Event</h2>
-            </div>
-            
-            <div className="p-4">
-              <form onSubmit={handleAddEvent} className="space-y-4">
-                <div>
-                  <label htmlFor="title" className="block text-sm font-medium text-gray-700">Event Title</label>
-                  <input
-                    type="text"
-                    id="title"
-                    name="title"
-                    value={newEvent.title}
-                    onChange={handleInputChange}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <label htmlFor="date" className="block text-sm font-medium text-gray-700">Date</label>
-                  <input
-                    type="date"
-                    id="date"
-                    name="date"
-                    value={newEvent.date}
-                    onChange={handleInputChange}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <label htmlFor="type" className="block text-sm font-medium text-gray-700">Event Type</label>
-                  <select
-                    id="type"
-                    name="type"
-                    value={newEvent.type}
-                    onChange={handleInputChange}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  >
-                    {eventTypes.map(type => (
-                      <option key={type.id} value={type.id}>{type.label}</option>
-                    ))}
-                  </select>
-                </div>
-                
-                <div>
-                  <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description</label>
-                  <textarea
-                    id="description"
-                    name="description"
-                    rows="3"
-                    value={newEvent.description}
-                    onChange={handleInputChange}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  ></textarea>
-                </div>
-                
-                <button
-                  type="submit"
-                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                >
-                  Add Event
-                </button>
-              </form>
-            </div>
-            
-            {/* Calendar Tips */}
-            <div className="bg-blue-50 p-4 border-t border-blue-100">
-              <h3 className="text-sm font-medium text-blue-800 mb-2">Why Track Important Dates?</h3>
-              <ul className="text-sm text-blue-700 space-y-1">
-                <li>• Never miss application deadlines</li>
-                <li>• Plan your preparation for entrance exams</li>
-                <li>• Stay updated on scholarship opportunities</li>
-                <li>• Schedule counseling sessions</li>
+              <div>
+                <label className="block mb-1">Description</label>
+                <textarea
+                  name="description"
+                  rows={3}
+                  value={newEvent.description}
+                  onChange={handleInputChange}
+                  className="w-full p-2 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                ></textarea>
+              </div>
+              <button
+                type="submit"
+                className="w-full bg-blue-600 py-2 rounded text-white font-semibold hover:bg-blue-700 transition"
+              >
+                Add Event
+              </button>
+            </form>
+            <div className="mt-6 text-gray-400">
+              <h3 className="font-semibold mb-2">Why Track Important Dates?</h3>
+              <ul className="list-disc list-inside space-y-1">
+                <li>Never miss application deadlines</li>
+                <li>Plan your preparation for entrance exams</li>
+                <li>Stay updated on scholarship opportunities</li>
+                <li>Schedule counseling sessions</li>
               </ul>
             </div>
           </div>
         </div>
       </div>
-    </div>
   );
 }
 

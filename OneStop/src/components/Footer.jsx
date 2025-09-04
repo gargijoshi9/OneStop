@@ -30,7 +30,7 @@ function Footer() {
         </div>
         
         <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-          <p>&copy; {new Date().getFullYear()} CareerPath Advisor. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} sAarthI. All rights reserved.</p>
           <p className="mt-2">A Government Initiative for Educational Guidance</p>
         </div>
       </div>

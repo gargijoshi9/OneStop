@@ -2,65 +2,86 @@ import React from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { AcademicCapIcon, ChartBarIcon, MapIcon, CalendarIcon } from "@heroicons/react/24/outline";
+import {
+  AcademicCapIcon,
+  ChartBarIcon,
+  MapIcon,
+  CalendarIcon,
+} from "@heroicons/react/24/outline";
 
 const features = [
   {
     title: "Aptitude & Interest Tests",
-    description: "Discover your natural talents and interests through our personalized assessment tools",
-    icon: <ChartBarIcon className="h-10 w-10 text-indigo-500" />,
+    description:
+      "Discover your natural talents and interests through our personalized assessment tools",
+    icon: (
+      <ChartBarIcon className="h-10 w-10 text-indigo-500 dark:text-purple-400" />
+    ),
     link: "/aptitude-test",
   },
   {
     title: "Course to Career Mapping",
-    description: "Explore different educational paths and see where they lead in terms of career opportunities",
-    icon: <MapIcon className="h-10 w-10 text-pink-500" />,
+    description:
+      "Explore different educational paths and see where they lead in terms of career opportunities",
+    icon: <MapIcon className="h-10 w-10 text-pink-500 dark:text-pink-400" />,
     link: "/course-explorer",
   },
   {
     title: "College Directory",
-    description: "Find government colleges in your area with detailed information about courses and facilities",
-    icon: <AcademicCapIcon className="h-10 w-10 text-amber-500" />,
+    description:
+      "Find government colleges in your area with detailed information about courses and facilities",
+    icon: (
+      <AcademicCapIcon className="h-10 w-10 text-amber-500 dark:text-yellow-400" />
+    ),
     link: "/college-directory",
   },
   {
     title: "Timeline Tracking",
-    description: "Stay informed about important dates for admissions, scholarships, and exams",
-    icon: <CalendarIcon className="h-10 w-10 text-cyan-500" />,
+    description:
+      "Stay informed about important dates for admissions, scholarships, and exams",
+    icon: (
+      <CalendarIcon className="h-10 w-10 text-cyan-500 dark:text-cyan-400" />
+    ),
     link: "/",
   },
 ];
 
 const cardVariants = {
   offscreen: { opacity: 0, y: 30, scale: 0.95 },
-  onscreen: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, type: "spring" } },
+  onscreen: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.6, type: "spring" },
+  },
 };
 
 function Home() {
   const { user } = useAuth();
 
   return (
-    <div className="dark:bg-black dark:text-white">
-      {/* Hero Section with Animated Entrance */}
-      <section className="bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 py-24 relative overflow-hidden shadow-xl">
+    <div className="bg-black text-white transition-colors duration-500">
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-[#10101a] via-black to-black py-24 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-         <div className="absolute -bottom-32 -right-32 w-[32rem] h-[32rem] bg-gradient-to-br from-indigo-400 to-purple-600 opacity-30 rounded-full blur-3xl pointer-events-none z-0"></div>
-    <motion.div
+          <div className="absolute -bottom-32 -right-32 w-[32rem] h-[32rem] bg-gradient-to-br from-indigo-400 to-purple-600 dark:from-indigo-900 dark:to-purple-900 opacity-30 rounded-full blur-3xl pointer-events-none" />
+          <motion.div
             initial={{ opacity: 0, y: -40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.1 }}
             className="text-center"
           >
-            <h1 className="text-5xl md:text-6xl font-extrabold text-white mb-6 drop-shadow-2xl">
-              Your&nbsp;
-              <span className="bg-gradient-to-r from-fuchsia-500 via-blue-300 to-cyan-300 bg-clip-text text-transparent animate-gradient">
+            <h1 className="text-5xl md:text-6xl font-extrabold text-white drop-shadow-lg mb-6">
+              Your{" "}
+              <span className="bg-gradient-to-r from-fuchsia-500 via-blue-500 to-cyan-400 dark:from-purple-400 dark:via-pink-400 dark:to-cyan-300 bg-clip-text text-transparent">
                 Personalized
-              </span>
-              &nbsp;Educational Journey Guide
+              </span>{" "}
+              Educational Journey Guide
             </h1>
-            <p className="text-2xl text-blue-100 max-w-2xl mx-auto mb-10 font-light">
-              Making informed decisions about your education and career path has never been easier.
-              <br />Let us guide you to the right choices.
+            <p className="text-2xl text-gray-400 max-w-2xl mx-auto mb-10">
+              Making informed decisions about your education and career path has
+              never been easier. <br />
+              Let us guide you to the right choices.
             </p>
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
@@ -76,46 +97,47 @@ function Home() {
               </Link>
               <Link
                 to="/course-explorer"
-                className="px-8 py-3 text-lg rounded-full font-bold shadow-lg bg-white text-indigo-700 hover:bg-indigo-100 hover:scale-105 transition-transform duration-200"
+                className="px-8 py-3 text-lg rounded-full font-bold shadow-lg bg-white text-indigo-700 hover:bg-indigo-100 dark:bg-slate-800 dark:text-purple-200 dark:hover:bg-slate-700"
               >
                 Explore Courses
               </Link>
             </motion.div>
           </motion.div>
-
-          {/* Decorative Gradient Blobs */}
-          <div className="absolute left-0 top-0 w-60 h-60 bg-pink-500 opacity-40 rounded-full blur-3xl mix-blend-lighten animate-pulse"></div>
-          <div className="absolute right-0 bottom-0 w-80 h-80 bg-blue-400 opacity-30 rounded-full blur-3xl mix-blend-lighten animate-pulse"></div>
         </div>
       </section>
 
-      {/* Features Section with Animated Cards */}
-      <section className="py-20 bg-gradient-to-br from-white via-indigo-50 to-purple-50">
+      {/* Features Section */}
+      <section className="py-20 bg-black">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-indigo-600">How We Help You</h2>
-            <p className="mt-4 text-lg text-gray-500 max-w-3xl mx-auto">
-              Our platform provides tools and resources to help you make the best decisions for your academic journey.
+            <h2 className="text-4xl font-bold text-indigo-600 dark:text-purple-300">
+              How We Help You
+            </h2>
+            <p className="mt-4 text-lg text-gray-300 dark:text-gray-400 max-w-3xl mx-auto">
+              Our platform provides tools and resources to help you make the
+              best decisions for your academic journey.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature, index) => (
+            {features.map((feature, idx) => (
               <motion.div
-                key={index}
+                key={idx}
                 variants={cardVariants}
                 initial="offscreen"
                 whileInView="onscreen"
                 viewport={{ once: true, amount: 0.2 }}
-                className="bg-white/70 backdrop-blur-xl rounded-2xl shadow-2xl p-7 min-h-[280px] flex flex-col items-center hover:scale-105 hover:shadow-indigo-300 hover:shadow-lg transition-transform duration-300 border border-indigo-100"
+                className="rounded-2xl shadow-lg border border-slate-300 bg-black p-7 flex flex-col items-center transition-all duration-300 shadow-purple-500/10 hover:shadow-xl hover:scale-[1.02] hover:border-purple-400/50 hover:shadow-purple-500/20"
               >
                 <div className="mb-5">{feature.icon}</div>
-                <h3 className="text-2xl font-semibold text-indigo-800 mb-2 text-center">
+                <h3 className="text-2xl font-semibold text-purple-300 mb-2 text-center">
                   {feature.title}
                 </h3>
-                <p className="text-gray-500 mb-6 text-center">{feature.description}</p>
+                <p className="text-gray-300 mb-6 text-center">
+                  {feature.description}
+                </p>
                 <Link
                   to={feature.link}
-                  className="text-indigo-600 hover:text-pink-500 font-medium underline decoration-dotted"
+                  className="text-purple-400 hover:underline mt-auto"
                 >
                   Learn more →
                 </Link>
@@ -125,82 +147,83 @@ function Home() {
         </div>
       </section>
 
-      {/* Testimonial Section with Subtle Animations */}
-      <section className="py-20 bg-gradient-to-br from-indigo-50 via-blue-50 to-blue-100">
+      {/* Testimonials Section */}
+      <section className="py-20 bg-black">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-indigo-700">Success Stories</h2>
-            <p className="mt-4 text-lg text-gray-500">
+            <h2 className="text-4xl font-bold text-indigo-500 dark:text-purple-300">
+              Success Stories
+            </h2>
+            <p className="mt-4 text-lg text-gray-200 dark:text-gray-400">
               Hear from students who made informed decisions with our guidance
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                quote:
-                  "The aptitude test helped me realize my strengths in analytical thinking. I'm now pursuing a BSc in Computer Science and couldn't be happier!",
+                quote: "The aptitude test helped me realize...",
                 name: "Priya Singh",
                 role: "Student, Delhi University",
               },
               {
-                quote:
-                  "I was confused about which stream to choose after 12th. This platform gave me clarity about various options and I found my passion in Economics.",
+                quote: "I was confused about which stream...",
                 name: "Rahul Sharma",
                 role: "Student, Government College",
               },
               {
-                quote:
-                  "The college directory feature helped me find a government college near my hometown with excellent science facilities. Saved me and my parents a lot of research time.",
+                quote: "The college directory feature...",
                 name: "Ananya Patel",
                 role: "First Year Science Student",
               },
-            ].map((testimonial, index) => (
+            ].map((testimonial, idx) => (
               <motion.div
-                key={index}
-                whileHover={{ scale: 1.04, boxShadow: "0 0 32px #a5b4fc" }}
-                className="bg-white rounded-xl p-8 shadow-lg relative transition-all duration-300"
-              >
-                <p className="text-gray-700 italic mb-4 text-lg before:content-['“'] after:content-['”'] relative z-10">
-                  {testimonial.quote}
-                </p>
-                <div>
-                  <p className="font-medium text-indigo-700">{testimonial.name}</p>
-                  <p className="text-sm text-gray-500">{testimonial.role}</p>
-                </div>
-                <span className="absolute -top-6 left-6 bg-gradient-to-r from-pink-400 to-indigo-400 rounded-full opacity-10 w-16 h-16 blur-2xl pointer-events-none z-0" />
-              </motion.div>
+  key={idx}
+  variants={cardVariants}           // Apply card animation variants
+  initial="offscreen"               // Initial animation state
+  whileInView="onscreen"           // Animate on entering viewport
+  viewport={{ once: true, amount: 0.2 }}
+  whileHover={{ scale: 1.04, y: -5 }}  // Hover effect: scale up and move up
+  className="rounded-2xl bg-black p-7 border border-slate-300 shadow-lg shadow-purple-500/10 transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/20 hover:border-purple-400/50 flex flex-col items-center"
+>
+  <p className="text-gray-300 italic mb-4 text-lg relative z-10">
+    “{testimonial.quote}”
+  </p>
+  <div>
+    <p className="font-semibold text-indigo-600 dark:text-purple-300">
+      {testimonial.name}
+    </p>
+    <p className="text-gray-300">
+      {testimonial.role}
+    </p>
+  </div>
+</motion.div>
+
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA Section with Vivid Colors & Pop */}
-      <section className="bg-gradient-to-r from-indigo-700 via-pink-500 to-purple-500 py-16">
+      {/* Call to Action Section */}
+      <section className="bg-gradient-to-r from-purple-600 via-pink-500 to-blue-600 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.h2
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6 }}
-            className="text-4xl font-bold text-white mb-4"
+            transition={{ duration: 0.5 }}
+            className="text-4xl font-bold text-white drop-shadow-lg"
           >
             Ready to Start Your Journey?
           </motion.h2>
-          <p className="text-2xl text-pink-100 mb-12 max-w-3xl mx-auto">
-            Create an account to get personalized recommendations and track your progress.
+          <p className="text-lg text-purple-200 mt-4 mb-8">
+            Create an account to get personalized recommendations and track your
+            progress.
           </p>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2, duration: 0.7 }}
-            className="flex justify-center"
+          <Link
+            to="/signup"
+            className="inline-block px-10 py-4 rounded-full bg-white text-purple-700 font-semibold shadow-lg hover:bg-purple-300 transition"
           >
-            <Link
-              to="/signup"
-              className="px-10 py-4 text-xl rounded-full font-bold bg-white text-indigo-600 shadow-lg hover:bg-indigo-50 hover:text-pink-500 hover:scale-105 transition ease-in-out duration-200"
-            >
-              Sign Up Now
-            </Link>
-          </motion.div>
+            Sign Up Now
+          </Link>
         </div>
       </section>
     </div>

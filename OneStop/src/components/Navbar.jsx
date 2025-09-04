@@ -1,18 +1,17 @@
 import { FolderOpenIcon, UserIcon, ArrowRightOnRectangleIcon } from "@heroicons/react/24/solid";
 
 import React, { useState, useRef, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
-
 function Navbar() {
-  const [isOpen, setIsOpen] = useState(false); // mobile menu toggle
-  const [profileOpen, setProfileOpen] = useState(false); // profile dropdown toggle
+  const [isOpen, setIsOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const profileRef = useRef(null);
 
-  // Close dropdown if clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
       if (profileRef.current && !profileRef.current.contains(event.target)) {
@@ -30,7 +29,7 @@ function Navbar() {
   const handleLogout = () => {
     setProfileOpen(false);
     logout();
-    navigate("/login"); // redirect to login after logout
+    navigate("/login");
   };
 
   const toggleMobileMenu = () => setIsOpen((prev) => !prev);
@@ -38,98 +37,97 @@ function Navbar() {
   const toggleProfileMenu = () => setProfileOpen((prev) => !prev);
 
   return (
-    <nav className="bg-white dark:bg-black shadow-md dark:shadow-gray-900">
+    <nav className="bg-black text-white shadow-md dark:shadow-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
-          {/* Logo / Brand */}
+          {/* Logo */}
           <Link to="/" className="flex-shrink-0 flex items-center">
-            <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent dark:from-cyan-400 dark:to-indigo-300">
+            <span className="text-2xl font-bold bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
               sAarthI
             </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex md:items-center md:space-x-4">
+          <div className="hidden md:flex md:items-center md:space-x-6">
             {[
-              { to: '/', label: 'Home' },
-              { to: '/aptitude-test', label: 'Aptitude Test' },
-              { to: '/course-explorer', label: 'Course Explorer' },
-              { to: '/college-directory', label: 'Colleges' },
-              { to: '/timeline', label: 'Timeline' },
+              { to: "/", label: "Home" },
+              { to: "/aptitude-test", label: "Aptitude Test" },
+              { to: "/course-explorer", label: "Course Explorer" },
+              { to: "/college-directory", label: "Colleges" },
+              { to: "/timeline", label: "Timeline" },
             ].map(({ to, label }) => (
               <Link
                 key={label}
                 to={to}
-                className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-cyan-400"
+                className="text-white hover:text-indigo-400 transition duration-200 font-medium"
               >
                 {label}
               </Link>
             ))}
 
-            {/* User Profile Dropdown */}
             {user ? (
-              <div className="relative ml-6" ref={profileRef}>
+              <div className="relative" ref={profileRef}>
                 <button
                   onClick={toggleProfileMenu}
-                  className="flex items-center space-x-2 focus:outline-none"
+                  className="flex items-center space-x-2 focus:outline-none cursor-pointer"
                   aria-haspopup="true"
                   aria-expanded={profileOpen}
                 >
-                  <span className="w-8 h-8 flex items-center justify-center rounded-full bg-indigo-100 dark:bg-gray-800 border-2 border-green-400 text-indigo-700 dark:text-cyan-300 font-bold">
+                  <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold">
                     {user.name ? user.name[0].toUpperCase() : "U"}
-                  </span>
-                  <span className="text-gray-900 dark:text-gray-100 font-medium">{user.name}</span>
+                  </div>
+                  <span className="text-white font-medium">{user.name}</span>
                   <svg
-                    className="ml-1 h-4 w-4 text-gray-600 dark:text-gray-400"
-                    xmlns="http://www.w3.org/2000/svg"
+                    className={`w-5 h-5 text-white transition-transform ${
+                      profileOpen ? "rotate-180" : ""
+                    }`}
                     viewBox="0 0 20 20"
                     fill="currentColor"
-                    aria-hidden="true"
                   >
                     <path d="M5.23 7.21a.75.75 0 011.06.02L10 11.293l3.71-4.06a.75.75 0 111.08 1.04l-4.25 4.65a.75.75 0 01-1.08 0L5.23 8.27a.75.75 0 01.002-1.06z" />
                   </svg>
                 </button>
 
-               {profileOpen && (
-  <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-900/90 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-xl py-2 z-30">
-    <Link
-      to="/my-courses"
-      className="flex items-center gap-3 px-6 py-3 rounded-lg text-base font-medium text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 group transition"
-      onClick={() => setProfileOpen(false)}
-    >
-      <FolderOpenIcon className="h-6 w-6 text-yellow-400 group-hover:text-yellow-500 transition" />
-      My Courses
-    </Link>
-    <Link
-      to="/settings"
-      className="flex items-center gap-3 px-6 py-3 rounded-lg text-base font-medium text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 group transition"
-      onClick={() => setProfileOpen(false)}
-    >
-      <UserIcon className="h-6 w-6 text-violet-600 group-hover:text-violet-700 transition" />
-      Profile
-    </Link>
-    <button
-      onClick={handleLogout}
-      className="flex items-center gap-3 w-full px-6 py-3 rounded-lg text-base font-medium text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 group transition text-left"
-    >
-      <ArrowRightOnRectangleIcon className="h-6 w-6 text-rose-500 group-hover:text-rose-600 transition" />
-      Logout
-    </button>
-  </div>
-)}
-
+                {/* Dropdown */}
+                {profileOpen && (
+                  <div className="absolute right-0 mt-2 w-56 bg-black border border-gray-800 rounded-xl shadow-lg z-30">
+                    <Link
+                      to="/my-courses"
+                      onClick={() => setProfileOpen(false)}
+                      className="flex items-center gap-3 px-6 py-3 text-white hover:bg-gray-800 transition"
+                    >
+                      <FolderOpenIcon className="w-5 h-5 text-indigo-400" />
+                      My Courses
+                    </Link>
+                    <Link
+                      to="/settings"
+                      onClick={() => setProfileOpen(false)}
+                      className="flex items-center gap-3 px-6 py-3 text-white hover:bg-gray-800 transition"
+                    >
+                      <UserIcon className="w-5 h-5 text-indigo-400" />
+                      Profile
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="flex items-center gap-3 w-full px-6 py-3 text-rose-500 hover:bg-gray-800 transition"
+                    >
+                      <ArrowRightOnRectangleIcon className="w-5 h-5" />
+                      Logout
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               <>
                 <Link
                   to="/login"
-                  className="ml-4 px-4 py-2 rounded-md text-sm font-medium text-white dark:text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700"
+                  className="px-4 py-2 bg-indigo-600 rounded text-white font-medium hover:bg-indigo-500 transition"
                 >
                   Login
                 </Link>
                 <Link
                   to="/signup"
-                  className="ml-2 px-4 py-2 rounded-md text-sm font-medium text-blue-600 dark:text-cyan-300 bg-white dark:bg-black border border-blue-600 dark:border-cyan-400 hover:bg-blue-50 dark:hover:bg-gray-800"
+                  className="ml-3 px-4 py-2 border border-indigo-600 rounded text-indigo-600 font-medium hover:bg-indigo-600 hover:text-white transition"
                 >
                   Signup
                 </Link>
@@ -137,33 +135,44 @@ function Navbar() {
             )}
           </div>
 
-          {/* Mobile Menu Button */}
-          <div className="flex md:hidden items-center">
+          {/* Mobile Hamburger */}
+          <div className="md:hidden flex items-center">
             <button
               onClick={toggleMobileMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-cyan-400 focus:outline-none"
+              className="text-white hover:text-indigo-400 focus:outline-none"
               aria-expanded={isOpen}
             >
-              <svg
-                className={`${isOpen ? "hidden" : "block"} h-6 w-6`}
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                aria-hidden="true"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-              <svg
-                className={`${isOpen ? "block" : "hidden"} h-6 w-6`}
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                aria-hidden="true"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              {isOpen ? (
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                </svg>
+              )}
             </button>
           </div>
         </div>
@@ -171,20 +180,20 @@ function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden bg-white dark:bg-black pb-3 px-2 pt-2">
-          <div className="flex flex-col space-y-1">
+        <div className="md:hidden bg-black border-t border-gray-800 shadow-lg">
+          <div className="px-4 py-4 space-y-4">
             {[
-              { to: '/', label: 'Home' },
-              { to: '/aptitude-test', label: 'Aptitude Test' },
-              { to: '/course-explorer', label: 'Course Explorer' },
-              { to: '/college-directory', label: 'Colleges' },
-              { to: '/timeline', label: 'Timeline' },
+              { to: "/", label: "Home" },
+              { to: "/aptitude-test", label: "Aptitude Test" },
+              { to: "/course-explorer", label: "Course Explorer" },
+              { to: "/college-directory", label: "Colleges" },
+              { to: "/timeline", label: "Timeline" },
             ].map(({ to, label }) => (
               <Link
                 key={label}
                 to={to}
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-cyan-400 hover:bg-gray-50 dark:hover:bg-gray-800"
                 onClick={() => setIsOpen(false)}
+                className="block px-3 py-2 rounded text-white hover:bg-gray-800 transition"
               >
                 {label}
               </Link>
@@ -192,23 +201,21 @@ function Navbar() {
 
             {user ? (
               <>
-                <span className="block px-6 py-2 font-semibold text-base text-gray-900 dark:text-cyan-200">
-                  Hi, {user.name}
-                </span>
+                <div className="px-3 py-2 text-white font-medium">Hi, {user.name}</div>
                 <Link
                   to="/my-courses"
-                  className="flex items-center gap-3 px-6 py-3 rounded-lg text-base font-medium text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 group transition"
                   onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2 rounded text-white hover:bg-gray-800"
                 >
-                  <FolderOpenIcon className="h-6 w-6 text-yellow-400 group-hover:text-yellow-500 transition" />
+                  <FolderOpenIcon className="w-5 h-5 text-indigo-400" />
                   My Courses
                 </Link>
                 <Link
                   to="/settings"
-                  className="flex items-center gap-3 px-6 py-3 rounded-lg text-base font-medium text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 group transition"
                   onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2 rounded text-white hover:bg-gray-800"
                 >
-                  <UserIcon className="h-6 w-6 text-violet-600 group-hover:text-violet-700 transition" />
+                  <UserIcon className="w-5 h-5 text-indigo-400" />
                   Profile
                 </Link>
                 <button
@@ -216,9 +223,9 @@ function Navbar() {
                     handleLogout();
                     setIsOpen(false);
                   }}
-                  className="flex items-center gap-3 w-full px-6 py-3 rounded-lg text-base font-medium text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 group transition text-left"
+                  className="flex items-center gap-3 w-full px-3 py-2 rounded text-rose-500 hover:bg-gray-800"
                 >
-                  <ArrowRightOnRectangleIcon className="h-6 w-6 text-rose-500 group-hover:text-rose-600 transition" />
+                  <ArrowRightOnRectangleIcon className="w-5 h-5" />
                   Logout
                 </button>
               </>
@@ -226,15 +233,15 @@ function Navbar() {
               <>
                 <Link
                   to="/login"
-                  className="block w-full px-6 py-3 mt-2 rounded-lg text-base font-medium text-center text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 dark:text-white shadow transition"
                   onClick={() => setIsOpen(false)}
+                  className="block px-3 py-2 rounded text-white hover:bg-gray-800"
                 >
                   Login
                 </Link>
                 <Link
                   to="/signup"
-                  className="block w-full mt-2 px-6 py-3 rounded-lg text-base font-medium text-blue-600 dark:text-cyan-300 border border-blue-600 dark:border-cyan-400 bg-white dark:bg-black hover:bg-blue-50 dark:hover:bg-gray-800 shadow transition text-center"
                   onClick={() => setIsOpen(false)}
+                  className="block px-3 py-2 rounded border border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white"
                 >
                   Signup
                 </Link>

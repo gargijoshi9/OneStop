@@ -1675,344 +1675,229 @@ function CollegeDirectory() {
   }, [filters, colleges, userLocation]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="text-center mb-10">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
-          College Directory
-        </h1>
-        <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-          Explore top colleges and universities based on your location, course
-          preferences, and more
-        </p>
-      </div>
-
-      {/* Filters and Find Nearby Button */}
-      <div className="bg-white shadow-md rounded-lg p-6 mb-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-          <div>
-            <label
-              htmlFor="location"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Location
-            </label>
-            <input
-              type="text"
-              id="location"
-              name="location"
-              value={filters.location}
-              onChange={(e) =>
-                setFilters((prev) => ({ ...prev, location: e.target.value }))
-              }
-              placeholder="City or State"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="course"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Course
-            </label>
-            <input
-              type="text"
-              id="course"
-              name="course"
-              value={filters.course}
-              onChange={(e) =>
-                setFilters((prev) => ({ ...prev, course: e.target.value }))
-              }
-              placeholder="B.Tech, BBA, B.Sc, etc."
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="type"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Institution Type
-            </label>
-            <select
-              id="type"
-              name="type"
-              value={filters.type}
-              onChange={(e) =>
-                setFilters((prev) => ({ ...prev, type: e.target.value }))
-              }
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="all">All Types</option>
-              <option value="Public">Public</option>
-              <option value="Private">Private</option>
-            </select>
-          </div>
-
-          <button
-            onClick={findNearbyColleges}
-            disabled={isFindingLocation}
-            className="w-full flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
-          >
-            {isFindingLocation ? "Finding..." : "Find Nearby Colleges"}
-          </button>
+    <div className="min-h-screen bg-black text-white w-full">
+      <div className="max-w-7xl mx-auto bg-gray-900 rounded-lg p-6">
+        <div className="text-center mb-10">
+          <h1 className="text-3xl font-bold text-white mb-4">College Directory</h1>
+          <p className="text-gray-400 max-w-3xl mx-auto">
+            Explore top colleges and universities based on your location, course preferences, and more
+          </p>
         </div>
-        {locationError && (
-          <p className="mt-2 text-red-500 text-sm">{locationError}</p>
-        )}
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* College List */}
-        <div className="lg:col-span-1 bg-white shadow-md rounded-lg overflow-hidden">
-          <div className="p-4 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-800">
-              Colleges ({filteredColleges.length})
-            </h2>
-          </div>
-
-          {loading ? (
-            <div className="p-8 text-center">
-              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500 mx-auto"></div>
-              <p className="mt-4 text-gray-600">Loading colleges...</p>
+        {/* Filters and Find Nearby Button */}
+        <div className="bg-gray-800 p-6 rounded-lg mb-8 border border-gray-700 shadow-md">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+            <div>
+              <label
+                htmlFor="location"
+                className="block text-sm font-medium text-gray-400 mb-1"
+              >
+                Location
+              </label>
+              <input
+                type="text"
+                id="location"
+                value={filters.location}
+                onChange={(e) =>
+                  setFilters((prev) => ({ ...prev, location: e.target.value }))
+                }
+                placeholder="City or State"
+                className="w-full px-3 py-2 rounded border border-gray-700 bg-gray-900 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600"
+              />
             </div>
-          ) : filteredColleges.length > 0 ? (
-            <div className="divide-y divide-gray-200 max-h-[600px] overflow-y-auto">
-              {filteredColleges.map((college) => (
+
+            <div>
+              <label
+                htmlFor="course"
+                className="block text-sm font-medium text-gray-400 mb-1"
+              >
+                Course
+              </label>
+              <input
+                type="text"
+                id="course"
+                value={filters.course}
+                onChange={(e) =>
+                  setFilters((prev) => ({ ...prev, course: e.target.value }))
+                }
+                placeholder="B.Tech, BBA, B.Sc, etc."
+                className="w-full px-3 py-2 rounded border border-gray-700 bg-gray-900 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="type"
+                className="block text-sm font-medium text-gray-400 mb-1"
+              >
+                Institution Type
+              </label>
+              <select
+                id="type"
+                value={filters.type}
+                onChange={(e) =>
+                  setFilters((prev) => ({ ...prev, type: e.target.value }))
+                }
+                className="w-full px-3 py-2 rounded border border-gray-700 bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+              >
+                <option value="all">All Types</option>
+                <option value="Public">Public</option>
+                <option value="Private">Private</option>
+              </select>
+            </div>
+
+            <button
+              onClick={findNearbyColleges}
+              disabled={isFindingLocation}
+              className="w-full flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600"
+            >
+              {isFindingLocation ? "Finding..." : "Find Nearby Colleges"}
+            </button>
+          </div>
+          {locationError && <p className="mt-2 text-red-500 text-sm">{locationError}</p>}
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* College List */}
+          <div className="lg:col-span-1 bg-gray-900 border border-gray-700 rounded-lg shadow-md overflow-y-auto max-h-[600px]">
+            <div className="p-4 border-b border-gray-700">
+              <h2 className="text-lg font-semibold text-white">
+                Colleges ({filteredColleges.length})
+              </h2>
+            </div>
+
+            {loading ? (
+              <div className="p-8 text-center text-gray-400">
+                Loading colleges...
+              </div>
+            ) : filteredColleges.length > 0 ? (
+              filteredColleges.map((college) => (
                 <div
                   key={college.id}
-                  className={`p-4 hover:bg-gray-50 cursor-pointer ${
-                    selectedCollege?.id === college.id ? "bg-blue-50" : ""
+                  className={`p-4 cursor-pointer border-b border-gray-700 hover:bg-blue-900 transition ${
+                    selectedCollege?.id === college.id ? "bg-blue-800" : ""
                   }`}
                   onClick={() => setSelectedCollege(college)}
                 >
-                  <div className="flex items-start">
-                    <div className="h-12 w-12 bg-gray-200 flex items-center justify-center rounded-md">
-                      <span className="text-lg font-bold text-gray-600">
-                        {college.name.charAt(0)}
-                      </span>
+                  <div className="flex items-center space-x-4">
+                    <div className="h-12 w-12 bg-gray-800 flex items-center justify-center rounded">
+                      <span className="text-xl text-gray-400 font-bold">{college.name.charAt(0)}</span>
                     </div>
-                    <div className="ml-4 flex-1">
-                      <h3 className="text-sm font-medium text-gray-900">
-                        {college.name}
-                      </h3>
-                      <p className="text-sm text-gray-500">
-                        {college.location}
-                      </p>
+                    <div>
+                      <h3 className="text-white font-semibold">{college.name}</h3>
+                      <p className="text-gray-400">{college.location}</p>
                       {userLocation && college.distance !== undefined && (
-                        <p className="text-xs text-gray-400 mt-1">
-                          {college.distance.toFixed(2)} km away
-                        </p>
+                        <p className="text-xs text-gray-500">{college.distance.toFixed(2)} km away</p>
                       )}
-                      <div className="mt-1 flex items-center">
-                        <span className="text-sm font-medium text-gray-700">
-                          {college.rating}
-                        </span>
-                        <div className="flex text-yellow-400 ml-1">
-                          {[...Array(Math.floor(college.rating))].map(
-                            (_, i) => (
-                              <svg
-                                key={i}
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                fill="currentColor"
-                                className="w-4 h-4"
-                              >
-                                <path
-                                  fillRule="evenodd"
-                                  d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z"
-                                  clipRule="evenodd"
-                                />
-                              </svg>
-                            )
-                          )}
-                          {college.rating % 1 !== 0 && (
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 24 24"
-                              fill="currentColor"
-                              className="w-4 h-4"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                          )}
+                      <div className="flex items-center space-x-1 mt-1">
+                        <span className="text-yellow-400 font-semibold">{college.rating}</span>
+                        <div className="flex space-x-0.5">
+                          {Array.from({ length: Math.floor(college.rating) }).map((_, i) => (
+                            <svg key={i} className="w-4 h-4 fill-yellow-400" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21 16.54 13.97 22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
+                          ))}
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="p-8 text-center">
-              <p className="text-gray-500">
+              ))
+            ) : (
+              <div className="p-8 text-center text-gray-400">
                 No colleges found matching your filters.
-              </p>
-              <button
-                onClick={() => {
-                  setFilters({ location: "", course: "", type: "all" });
-                  setUserLocation(null);
-                }}
-                className="mt-4 text-blue-600 hover:text-blue-800"
-              >
-                Clear filters
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Map and College Details */}
-        <div className="lg:col-span-2">
-          {/* OpenStreetMap */}
-          <div className="bg-white shadow-md rounded-lg overflow-hidden mb-6">
-            <div className="p-4 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-800">
-                College Locations
-              </h2>
-            </div>
-            <div ref={mapRef} className="h-[400px] bg-gray-100"></div>
+                <button
+                  className="mt-4 px-4 py-2 border border-blue-700 rounded text-blue-500 hover:bg-blue-900"
+                  onClick={() => {
+                    setFilters({ location: "", course: "", type: "all" });
+                    setUserLocation(null);
+                  }}
+                >
+                  Reset Filters
+                </button>
+              </div>
+            )}
           </div>
 
-          {/* Selected College Details */}
-          {selectedCollege ? (
-            <div className="bg-white shadow-md rounded-lg overflow-hidden">
-              <div className="p-4 border-b border-gray-200">
-                <h2 className="text-lg font-semibold text-gray-800">
-                  College Details
-                </h2>
-              </div>
-              <div className="p-6">
-                <div className="flex items-start">
-                  <div className="h-20 w-20 bg-gray-200 flex items-center justify-center rounded-md">
-                    <span className="text-2xl font-bold text-gray-600">
-                      {selectedCollege.name.charAt(0)}
-                    </span>
+          {/* Map and College Details */}
+          <div className="lg:col-span-2 flex flex-col space-y-6">
+            {/* Map Container with padding to show black border */}
+            <div
+              className="bg-gray-900 border border-gray-700 rounded-lg shadow-md p-4 flex justify-center items-center"
+              style={{ height: "300px" }}
+            >
+              <div
+                ref={mapRef}
+                className="w-full h-full rounded-md"
+                style={{ margin: "10px" }}
+              />
+            </div>
+
+            {/* Selected College Details */}
+            {selectedCollege ? (
+              <div className="bg-gray-900 border border-gray-700 rounded-lg shadow-md p-6">
+                <h2 className="text-white text-xl font-semibold mb-4">College Details</h2>
+                <div className="flex space-x-6">
+                  <div className="h-20 w-20 bg-gray-800 rounded flex items-center justify-center">
+                    <span className="text-gray-400 text-3xl font-bold">{selectedCollege.name.charAt(0)}</span>
                   </div>
-                  <div className="ml-5">
-                    <h3 className="text-xl font-bold text-gray-900">
-                      {selectedCollege.name}
-                    </h3>
-                    <p className="text-gray-600">{selectedCollege.location}</p>
-                    <div className="mt-2 flex items-center">
-                      <span className="font-medium text-gray-700">
-                        {selectedCollege.rating}
-                      </span>
-                      <div className="flex text-yellow-400 ml-1">
-                        {[...Array(Math.floor(selectedCollege.rating))].map(
-                          (_, i) => (
-                            <svg
-                              key={i}
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 24 24"
-                              fill="currentColor"
-                              className="w-4 h-4"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                          )
-                        )}
-                        {selectedCollege.rating % 1 !== 0 && (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                            className="w-4 h-4"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        )}
+                  <div className="flex-1 text-gray-300">
+                    <h3 className="text-2xl font-bold text-white">{selectedCollege.name}</h3>
+                    <p>{selectedCollege.location}</p>
+                    <p className="mt-1">{selectedCollege.description}</p>
+
+                    <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <strong>Type:</strong> {selectedCollege.type}
                       </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-6 space-y-4">
-                  <p className="text-gray-700">{selectedCollege.description}</p>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-500">
-                        Type
-                      </h4>
-                      <p className="mt-1">{selectedCollege.type}</p>
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-500">
-                        Ranking
-                      </h4>
-                      <p className="mt-1">{selectedCollege.ranking}</p>
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-500">
-                        Fees Structure
-                      </h4>
-                      <p className="mt-1">{selectedCollege.fees}</p>
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-500">
-                        Website
-                      </h4>
-                      <p className="mt-1">
-                        <a href="#" className="text-blue-600 hover:underline">
+                      <div>
+                        <strong>Ranking:</strong> {selectedCollege.ranking}
+                      </div>
+                      <div>
+                        <strong>Fees:</strong> {selectedCollege.fees}
+                      </div>
+                      <div>
+                        <strong>Website:</strong>{" "}
+                        <a href={selectedCollege.website} className="text-blue-400 hover:underline">
                           {selectedCollege.website}
                         </a>
-                      </p>
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="mt-4">
-                    <h4 className="text-sm font-medium text-gray-500 mb-2">
-                      Available Courses
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedCollege.courses.map((course, idx) => (
-                        <span
-                          key={idx}
-                          className="bg-blue-100 text-blue-800 px-2 py-1 rounded-md text-xs font-medium"
-                        >
-                          {course}
-                        </span>
-                      ))}
+                    <div className="mt-4">
+                      <strong>Available Courses:</strong>
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {selectedCollege.courses.map((course, idx) => (
+                          <span
+                            key={idx}
+                            className="bg-blue-900 text-blue-400 px-2 py-1 rounded-md text-xs font-medium"
+                          >
+                            {course}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="mt-6">
-                    <a
-                      href="#"
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                    >
-                      Apply Now
-                    </a>
-                    <a
-                      href="#"
-                      className="ml-3 inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                    >
-                      Download Brochure
-                    </a>
+                    <div className="mt-6 space-x-4">
+                      <a
+                        href="#"
+                        className="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded shadow font-semibold"
+                      >
+                        Apply Now
+                      </a>
+                      <a
+                        href="#"
+                        className="bg-gray-800 hover:bg-gray-700 text-gray-200 px-4 py-2 rounded shadow font-semibold"
+                      >
+                        Download Brochure
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ) : (
-            <div className="bg-white shadow-md rounded-lg overflow-hidden">
-              <div className="p-8 text-center">
+            ) : (
+              <div className="bg-gray-900 border border-gray-700 rounded-lg shadow-md p-8 text-center text-gray-400">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-12 w-12 mx-auto text-gray-400"
+                  className="mx-auto h-12 w-12 mb-4"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -2021,18 +1906,13 @@ function CollegeDirectory() {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"
+                    d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16"
                   />
                 </svg>
-                <h3 className="mt-4 text-lg font-medium text-gray-900">
-                  Select a College
-                </h3>
-                <p className="mt-1 text-gray-500">
-                  Click on a college from the list to view detailed information
-                </p>
+                <p>Select a college from the list to view detailed information.</p>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>

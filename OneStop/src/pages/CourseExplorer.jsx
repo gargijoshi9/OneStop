@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 function CourseExplorer() {
   const [activeStream, setActiveStream] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
-  
+
   const streams = [
     { id: 'all', name: 'All Streams' },
     { id: 'arts', name: 'Arts & Humanities' },
@@ -12,7 +12,7 @@ function CourseExplorer() {
     { id: 'commerce', name: 'Commerce & Management' },
     { id: 'vocational', name: 'Vocational & Skill-based' }
   ];
-  
+
   const courses = [
     {
       id: 1,
@@ -95,46 +95,44 @@ function CourseExplorer() {
       governmentExams: ['GPAT', 'NIPER JEE', 'Drug Inspector Exam']
     }
   ];
-  
+
   const filteredCourses = courses
     .filter(course => activeStream === 'all' || course.stream === activeStream)
-    .filter(course => 
+    .filter(course =>
       course.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       course.description.toLowerCase().includes(searchQuery.toLowerCase())
     );
-  
+
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="min-h-screen bg-black text-white px-4 sm:px-6 lg:px-8 py-12">
       <div className="text-center mb-12">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">Course Explorer</h1>
-        <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-          Discover various educational paths and understand where they can lead you in terms of career opportunities
+        <h1 className="text-3xl font-bold text-white mb-4">Course Explorer</h1>
+        <p className="text-gray-400 max-w-xl mx-auto">
+          Discover various educational paths and understand where they can lead in terms of career opportunities
         </p>
       </div>
-      
-      {/* Search and Filter Bar */}
-      <div className="mb-8 bg-white p-4 rounded-lg shadow-md">
+
+      {/* Search and Filter */}
+      <div className="mb-8 bg-gray-900 border border-gray-700 rounded-lg shadow-md p-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div className="flex-1">
-            <input
-              type="text"
-              placeholder="Search courses..."
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-          
-          <div className="flex flex-wrap gap-2">
+          <input
+            type="text"
+            placeholder="Search courses..."
+            className="flex-grow bg-gray-800 text-white border border-gray-700 rounded-md px-4 py-2 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+          />
+          <div className="flex flex-wrap space-x-2">
             {streams.map(stream => (
               <button
                 key={stream.id}
-                className={`px-4 py-1 text-sm rounded-full transition ${
+                onClick={() => setActiveStream(stream.id)}
+                className={`px-4 py-2 rounded-full font-semibold transition-colors ${
                   activeStream === stream.id
                     ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                 }`}
-                onClick={() => setActiveStream(stream.id)}
               >
                 {stream.name}
               </button>
@@ -142,122 +140,72 @@ function CourseExplorer() {
           </div>
         </div>
       </div>
-      
-      {/* Course Cards */}
+
+      {/* Courses Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredCourses.map(course => (
-          <div key={course.id} className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow">
+          <div
+            key={course.id}
+            className="bg-gray-900 border border-gray-700 rounded-lg shadow-md overflow-hidden hover:ring-2 hover:ring-blue-600 transition"
+          >
             <div className={`h-2 ${
-              course.stream === 'arts' ? 'bg-purple-500' :
-              course.stream === 'science' ? 'bg-blue-500' :
-              course.stream === 'commerce' ? 'bg-green-500' : 'bg-orange-500'
+              course.stream === 'arts' ? 'bg-purple-600' :
+              course.stream === 'science' ? 'bg-blue-600' :
+              course.stream === 'commerce' ? 'bg-green-600' :
+              'bg-pink-600'
             }`}></div>
-            
             <div className="p-6">
               <div className="flex justify-between items-start mb-4">
-                <h2 className="text-xl font-semibold text-gray-900">{course.name}</h2>
-                <span className={`text-xs font-medium px-2 py-1 rounded-full ${
-                  course.stream === 'arts' ? 'bg-purple-100 text-purple-800' :
-                  course.stream === 'science' ? 'bg-blue-100 text-blue-800' :
-                  course.stream === 'commerce' ? 'bg-green-100 text-green-800' : 'bg-orange-100 text-orange-800'
+                <h2 className="text-xl font-semibold text-white">{course.name}</h2>
+                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                  course.stream === 'arts' ? 'bg-purple-700 text-purple-300' :
+                  course.stream === 'science' ? 'bg-blue-700 text-blue-300' :
+                  course.stream === 'commerce' ? 'bg-green-700 text-green-300' :
+                  'bg-pink-700 text-pink-300'
                 }`}>
-                  {streams.find(s => s.id === course.stream)?.name || course.stream}
+                  {streams.find(s => s.id === course.stream)?.name}
                 </span>
               </div>
-              
-              <div className="flex items-center mb-4">
-                <span className="text-sm text-gray-500">
-                  <span className="font-medium">Duration:</span> {course.duration}
-                </span>
+              <p className="text-gray-400 mb-2">{course.description}</p>
+              <p className="text-gray-400 mb-1"><strong>Duration:</strong> {course.duration}</p>
+              <div>
+                <details className="bg-gray-800 rounded-md p-2 mb-2 cursor-pointer">
+                  <summary className="text-white font-semibold">Potential Careers</summary>
+                  <ul className="list-disc list-inside text-gray-400 mt-2">
+                    {course.careers.map((career, i) => <li key={i}>{career}</li>)}
+                  </ul>
+                </details>
+                <details className="bg-gray-800 rounded-md p-2 mb-2 cursor-pointer">
+                  <summary className="text-white font-semibold">Higher Studies Options</summary>
+                  <ul className="list-disc list-inside text-gray-400 mt-2">
+                    {course.higherStudies.map((study, i) => <li key={i}>{study}</li>)}
+                  </ul>
+                </details>
+                <details className="bg-gray-800 rounded-md p-2 cursor-pointer">
+                  <summary className="text-white font-semibold">Government Exam Eligibility</summary>
+                  <ul className="list-disc list-inside text-gray-400 mt-2">
+                    {course.governmentExams.map((exam, i) => <li key={i}>{exam}</li>)}
+                  </ul>
+                </details>
               </div>
-              
-              <p className="text-gray-600 mb-6">{course.description}</p>
-              
-              <details className="group mb-3">
-                <summary className="flex justify-between items-center cursor-pointer list-none">
-                  <span className="text-sm font-medium text-gray-900">Potential Careers</span>
-                  <span className="transition group-open:rotate-180">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                    </svg>
-                  </span>
-                </summary>
-                <ul className="mt-2 space-y-1 text-sm text-gray-600">
-                  {course.careers.map((career, i) => (
-                    <li key={i} className="flex items-start">
-                      <span className="text-blue-600 mr-2">•</span>
-                      {career}
-                    </li>
-                  ))}
-                </ul>
-              </details>
-              
-              <details className="group mb-3">
-                <summary className="flex justify-between items-center cursor-pointer list-none">
-                  <span className="text-sm font-medium text-gray-900">Higher Studies Options</span>
-                  <span className="transition group-open:rotate-180">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                    </svg>
-                  </span>
-                </summary>
-                <ul className="mt-2 space-y-1 text-sm text-gray-600">
-                  {course.higherStudies.map((study, i) => (
-                    <li key={i} className="flex items-start">
-                      <span className="text-blue-600 mr-2">•</span>
-                      {study}
-                    </li>
-                  ))}
-                </ul>
-              </details>
-              
-              <details className="group mb-6">
-                <summary className="flex justify-between items-center cursor-pointer list-none">
-                  <span className="text-sm font-medium text-gray-900">Government Exam Eligibility</span>
-                  <span className="transition group-open:rotate-180">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                    </svg>
-                  </span>
-                </summary>
-                <ul className="mt-2 space-y-1 text-sm text-gray-600">
-                  {course.governmentExams.map((exam, i) => (
-                    <li key={i} className="flex items-start">
-                      <span className="text-blue-600 mr-2">•</span>
-                      {exam}
-                    </li>
-                  ))}
-                </ul>
-              </details>
-              
-              <div className="flex justify-between">
-                <Link 
-                  to="/college-directory"
-                  className="inline-flex items-center text-blue-600 hover:text-blue-800"
-                >
-                  <span className="mr-1">Find Colleges</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                  </svg>
-                </Link>
-                
-                <button className="text-gray-600 hover:text-gray-800">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" />
-                  </svg>
-                </button>
-              </div>
+              <Link to="/college-directory" className="text-blue-500 hover:underline mt-4 block">
+                Find Colleges &rarr;
+              </Link>
             </div>
           </div>
         ))}
       </div>
-      
+
+      {/* No results */}
       {filteredCourses.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-lg text-gray-600">No courses match your search criteria.</p>
-          <button 
-            onClick={() => {setSearchQuery(''); setActiveStream('all');}}
-            className="mt-4 px-4 py-2 text-blue-600 border border-blue-600 rounded-md hover:bg-blue-50"
+        <div className="mt-12 text-center text-gray-400">
+          <p>No courses match your search criteria.</p>
+          <button
+            onClick={() => {
+              setSearchQuery('');
+              setActiveStream('all');
+            }}
+            className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
           >
             Reset Filters
           </button>
