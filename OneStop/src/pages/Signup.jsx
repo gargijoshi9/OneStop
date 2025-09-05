@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline"; // ✅ Import Heroicons
 
 function Signup() {
   const { setUser } = useAuth();
@@ -14,14 +15,49 @@ function Signup() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const [showPassword, setShowPassword] = useState(false); // toggle for Password
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // toggle for Confirm Password
+
+  // ✅ State for password strength
+  const [passwordStrength, setPasswordStrength] = useState("");
+  const [passwordStrengthColor, setPasswordStrengthColor] = useState("");
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     setFormData((prevState) => ({
       ...prevState,
       [name]: value,
     }));
+
+    if (name === "password") {
+      checkPasswordStrength(value);
+    }
+  };
+
+  // ✅ Password Strength Logic
+  const checkPasswordStrength = (pw) => {
+    if (!pw || pw.length === 0) {
+      setPasswordStrength("");
+      setPasswordStrengthColor("");
+      return;
+    }
+
+    const hasSpecialChar = /[^a-zA-Z0-9]/.test(pw);
+
+    if (pw.length <= 3 && !hasSpecialChar) {
+      setPasswordStrength("Weak");
+      setPasswordStrengthColor("text-red-500");
+    } else if (pw.length >= 4 && pw.length <= 7 && !hasSpecialChar) {
+      setPasswordStrength("Medium");
+      setPasswordStrengthColor("text-yellow-500");
+    } else if (pw.length >= 8 || hasSpecialChar) {
+      setPasswordStrength("Strong");
+      setPasswordStrengthColor("text-green-500");
+    }
   };
 
   const handleSignup = async (e) => {
@@ -57,7 +93,7 @@ function Signup() {
         throw new Error("Please enter a valid 10-digit mobile number");
       }
 
-      // Set user in context (AuthProvider syncs with localStorage automatically)
+      // Set user in context
       setUser({
         name: formData.name,
         email: formData.email,
@@ -84,10 +120,10 @@ function Signup() {
 
       <div className="relative z-10 max-w-md w-full bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg p-8">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-white">
+          <h2 className="text-3xl font-bold">
             Create an account
           </h2>
-          <p className="mt-2 text-white/80">
+          <p className="mt-2 text-gray-400">
             Get personalized educational guidance
           </p>
         </div>
@@ -180,9 +216,9 @@ function Signup() {
               required
               value={formData.password}
               onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg shadow-sm text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="mt-1 block w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md shadow-sm text-white placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             />
-            <p className="mt-1 text-xs text-white/60">
+            <p className="mt-1 text-xs text-gray-500">
               Must be at least 6 characters long
             </p>
           </div>
@@ -200,7 +236,7 @@ function Signup() {
               required
               value={formData.confirmPassword}
               onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg shadow-sm text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="mt-1 block w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md shadow-sm text-white placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
 
