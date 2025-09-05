@@ -2,6 +2,17 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import Login from "./Login"; // Assuming you have a Login component
+import {
+  ArrowPathIcon,
+  LightBulbIcon,
+  BeakerIcon,
+  BriefcaseIcon,
+  CheckCircleIcon,
+  ArrowRightCircleIcon,
+  ExclamationTriangleIcon,
+  PaintBrushIcon,
+  BookOpenIcon,
+} from "@heroicons/react/24/outline";
 
 function AptitudeTest() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -346,7 +357,7 @@ function AptitudeTest() {
     return (
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+          <ArrowPathIcon className="h-12 w-12 text-blue-500 animate-spin mx-auto" />
           <p className="mt-4 text-lg text-gray-600">Loading questions...</p>
         </div>
       </div>
@@ -357,7 +368,8 @@ function AptitudeTest() {
     return (
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center">
-          <div className="bg-red-50 p-4 rounded-md">
+          <div className="bg-red-50 p-4 rounded-md inline-flex flex-col items-center">
+            <ExclamationTriangleIcon className="h-10 w-10 text-red-500 mb-2" />
             <p className="text-red-800">{error}</p>
             <button
               onClick={() => window.location.reload()}
@@ -372,176 +384,197 @@ function AptitudeTest() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="text-center mb-10">
-        <h1 className="text-3xl font-bold text-gray-100 mb-4">
-          Aptitude & Interest Assessment
-        </h1>
-        <p className="text-lg text-gray-500 max-w-3xl mx-auto">
-          Discover which academic path aligns with your natural abilities and
-          interests by answering the following questions
-        </p>
+    <div className="relative min-h-screen w-full bg-black overflow-hidden flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      {/* Animated background */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-[48rem] h-[48rem] bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full opacity-20 blur-3xl animate-float" />
+        <div className="absolute -bottom-40 -left-40 w-[48rem] h-[48rem] bg-gradient-to-br from-fuchsia-500 to-purple-700 rounded-full opacity-20 blur-3xl animate-float-delay" />
       </div>
 
-      {/* Progress */}
-      {!showResult && (
-        <div className="bg-white shadow-lg rounded-lg p-6 md:p-8 mb-6">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-medium text-gray-500">
-              Question {currentQuestion + 1} of {questions.length}
-            </span>
-            <span className="text-sm font-medium text-blue-600">
-              {Math.round(((currentQuestion + 1) / questions.length) * 100)}%
-              Complete
-            </span>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-2.5">
-            <div
-              className="bg-blue-600 h-2.5 rounded-full"
-              style={{
-                width: `${((currentQuestion + 1) / questions.length) * 100}%`,
-              }}
-            />
-          </div>
+      <div className="relative z-10 max-w-5xl mx-auto w-full">
+        <div className="text-center mb-10">
+          <h1 className="text-3xl font-bold text-white mb-4 flex items-center justify-center gap-3">
+            <BookOpenIcon className="h-8 w-8" />
+            Aptitude & Interest Assessment
+          </h1>
+          <p className="text-lg text-white/80 max-w-3xl mx-auto">
+            Discover which academic path aligns with your natural abilities and
+            interests by answering the following questions
+          </p>
         </div>
-      )}
 
-      {/* Quiz / Results */}
-      <div className="bg-white shadow-lg rounded-lg p-6 md:p-8">
-        {!showResult ? (
-          <>
-            <h2 className="text-xl font-semibold text-gray-800 mb-6">
-              {questions[currentQuestion].question}
-            </h2>
-
-            <div className="space-y-4">
-              {questions[currentQuestion].options.map((option, idx) => (
-                <button
-                  key={idx}
-                  onClick={() =>
-                    handleAnswer(questions[currentQuestion].id, idx)
-                  }
-                  className="w-full text-left p-4 border rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors"
-                >
-                  {option}
-                </button>
-              ))}
+        {/* Progress */}
+        {!showResult && (
+          <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg p-6 md:p-8 mb-6">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-sm font-medium text-white/80">
+                Question {currentQuestion + 1} of {questions.length}
+              </span>
+              <span className="text-sm font-medium text-purple-300">
+                {Math.round(((currentQuestion + 1) / questions.length) * 100)}%
+                Complete
+              </span>
             </div>
-          </>
-        ) : (
-          (() => {
-            const recommendation = getRecommendations();
-            return (
-              <div className="space-y-6">
-                <div className="p-6 bg-blue-50 border border-blue-200 rounded-lg">
-                  <h3 className="text-xl font-semibold text-blue-800 mb-2">
-                    Recommended Stream
-                  </h3>
-                  <p className="text-2xl font-bold text-blue-900">
-                    {recommendation.stream}
-                  </p>
-                </div>
+            <div className="w-full bg-white/20 rounded-full h-2.5">
+              <div
+                className="bg-gradient-to-r from-purple-500 to-fuchsia-500 h-2.5 rounded-full"
+                style={{
+                  width: `${((currentQuestion + 1) / questions.length) * 100}%`,
+                }}
+              />
+            </div>
+          </div>
+        )}
 
-                <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                    Your Interest Profile
-                  </h3>
-                  <div className="grid grid-cols-3 gap-4">
-                    {Object.entries(recommendation.scores).map(
-                      ([stream, score]) => (
-                        <div
-                          key={stream}
-                          className="bg-gray-50 rounded-lg p-4 text-center"
-                        >
-                          <div className="font-medium text-gray-700">
-                            {stream}
-                          </div>
-                          <div className="mt-2 relative pt-1">
-                            <div className="overflow-hidden h-2 text-xs flex rounded bg-gray-200">
-                              <div
-                                style={{ width: `${(score / 5) * 100}%` }}
-                                className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${
-                                  stream === "Science"
-                                    ? "bg-blue-600"
-                                    : stream === "Arts"
-                                    ? "bg-purple-600"
-                                    : "bg-green-600"
-                                }`}
-                              />
+        {/* Quiz / Results */}
+        <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg p-6 md:p-8">
+          {!showResult ? (
+            <>
+              <h2 className="text-xl font-semibold text-white mb-6">
+                {questions[currentQuestion].question}
+              </h2>
+
+              <div className="space-y-4">
+                {questions[currentQuestion].options.map((option, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() =>
+                      handleAnswer(questions[currentQuestion].id, idx)
+                    }
+                    className="w-full text-left p-4 border border-white/20 rounded-lg text-white/90 hover:bg-white/10 hover:border-purple-400 transition-colors"
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : (
+            (() => {
+              const recommendation = getRecommendations();
+              const streamIcons = {
+                Science: <BeakerIcon className="h-8 w-8 text-cyan-300" />,
+                Arts: <PaintBrushIcon className="h-8 w-8 text-fuchsia-300" />,
+                Commerce: <BriefcaseIcon className="h-8 w-8 text-emerald-300" />,
+              };
+              return (
+                <div className="space-y-6 text-white">
+                  <div className="p-6 bg-gradient-to-br from-purple-600/30 to-indigo-700/30 border border-white/10 rounded-lg text-center">
+                    <h3 className="text-xl font-semibold text-white/90 mb-2">
+                      Recommended Stream
+                    </h3>
+                    <div className="flex items-center justify-center gap-3">
+                      {streamIcons[recommendation.stream]}
+                      <p className="text-2xl font-bold text-white">
+                        {recommendation.stream}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-white/90 mb-4">
+                      Your Interest Profile
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      {Object.entries(recommendation.scores).map(
+                        ([stream, score]) => (
+                          <div
+                            key={stream}
+                            className="bg-white/5 border border-white/10 rounded-lg p-4 text-center"
+                          >
+                            <div className="font-medium text-white/80">
+                              {stream}
+                            </div>
+                            <div className="mt-2 relative pt-1">
+                              <div className="overflow-hidden h-2 text-xs flex rounded bg-white/20">
+                                <div
+                                  style={{ width: `${(score / 5) * 100}%` }}
+                                  className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${
+                                    stream === "Science"
+                                      ? "bg-cyan-400"
+                                      : stream === "Arts"
+                                      ? "bg-fuchsia-400"
+                                      : "bg-emerald-400"
+                                  }`}
+                                />
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      )
-                    )}
+                        )
+                      )}
+                    </div>
                   </div>
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="p-6 bg-gray-50 border border-gray-200 rounded-lg">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                      Suggested Courses
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="p-6 bg-white/5 border border-white/10 rounded-lg">
+                      <h3 className="text-lg font-semibold text-white/90 mb-4">
+                        Suggested Courses
+                      </h3>
+                      <ul className="space-y-2">
+                        {recommendation.courses.map((course, index) => (
+                          <li key={index} className="flex items-start">
+                            <CheckCircleIcon className="h-5 w-5 text-purple-400 mr-2 flex-shrink-0 mt-0.5" />
+                            <span className="text-white/80">{course}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="p-6 bg-white/5 border border-white/10 rounded-lg">
+                      <h3 className="text-lg font-semibold text-white/90 mb-4">
+                        Potential Careers
+                      </h3>
+                      <ul className="space-y-2">
+                        {recommendation.careers.map((career, index) => (
+                          <li key={index} className="flex items-start">
+                            <CheckCircleIcon className="h-5 w-5 text-purple-400 mr-2 flex-shrink-0 mt-0.5" />
+                            <span className="text-white/80">{career}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="p-6 bg-yellow-400/10 border border-yellow-400/20 rounded-lg">
+                    <h3 className="text-lg font-semibold text-yellow-200 mb-2 flex items-center gap-2">
+                      <LightBulbIcon className="h-6 w-6" />
+                      Next Steps
                     </h3>
-                    <ul className="space-y-2">
-                      {recommendation.courses.map((course, index) => (
-                        <li key={index} className="flex items-start">
-                          <span className="text-blue-600 mr-2">•</span>
-                          <span>{course}</span>
-                        </li>
-                      ))}
-                    </ul>
+                    <p className="text-yellow-200/80 mb-4">
+                      Based on your assessment, we recommend exploring more about
+                      the courses in {recommendation.stream} stream.
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-4">
+                      <Link
+                        to="/course-explorer"
+                        className="flex items-center justify-center gap-2 text-center px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-md hover:opacity-90 transition-opacity"
+                      >
+                        <ArrowRightCircleIcon className="h-5 w-5" />
+                        Explore Related Courses
+                      </Link>
+                      <Link
+                        to="/college-directory"
+                        className="flex items-center justify-center gap-2 text-center px-4 py-2 bg-white/10 text-white rounded-md hover:bg-white/20 transition-colors"
+                      >
+                        <ArrowRightCircleIcon className="h-5 w-5" />
+                        Find Colleges Offering These Courses
+                      </Link>
+                    </div>
                   </div>
 
-                  <div className="p-6 bg-gray-50 border border-gray-200 rounded-lg">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                      Potential Careers
-                    </h3>
-                    <ul className="space-y-2">
-                      {recommendation.careers.map((career, index) => (
-                        <li key={index} className="flex items-start">
-                          <span className="text-blue-600 mr-2">•</span>
-                          <span>{career}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="p-6 bg-yellow-50 border border-yellow-200 rounded-lg">
-                  <h3 className="text-lg font-semibold text-yellow-800 mb-2">
-                    Next Steps
-                  </h3>
-                  <p className="text-gray-700 mb-4">
-                    Based on your assessment, we recommend exploring more about
-                    the courses in {recommendation.stream} stream.
-                  </p>
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    <Link
-                      to="/course-explorer"
-                      className="text-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                  <div className="text-center pt-4">
+                    <button
+                      onClick={resetTest}
+                      className="flex items-center justify-center gap-2 mx-auto px-4 py-2 text-purple-300 font-medium hover:underline"
                     >
-                      Explore Related Courses
-                    </Link>
-                    <Link
-                      to="/college-directory"
-                      className="text-center px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
-                    >
-                      Find Colleges Offering These Courses
-                    </Link>
+                      <ArrowPathIcon className="h-5 w-5" />
+                      Retake Assessment
+                    </button>
                   </div>
                 </div>
-
-                <div className="text-center pt-4">
-                  <button
-                    onClick={resetTest}
-                    className="px-4 py-2 text-blue-600 font-medium hover:underline"
-                  >
-                    Retake Assessment
-                  </button>
-                </div>
-              </div>
-            );
-          })()
-        )}
+              );
+            })()
+          )}
+        </div>
       </div>
     </div>
   );

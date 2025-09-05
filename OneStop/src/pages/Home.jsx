@@ -7,7 +7,10 @@ import {
   ChartBarIcon,
   MapIcon,
   CalendarIcon,
-} from "@heroicons/react/24/outline";
+  ArrowRightIcon,
+  ChatBubbleLeftRightIcon,
+  UserPlusIcon,
+} from "@heroicons/react/24/solid";
 
 const features = [
   {
@@ -64,8 +67,8 @@ function Home() {
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-gray-900 via-black to-blue-900/50 py-24 relative overflow-hidden">
         <div className="absolute inset-0 z-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 w-96 h-96 bg-gradient-to-br from-purple-600 to-blue-800 rounded-full opacity-20 blur-3xl animate-float" />
-          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-br from-pink-600 to-purple-800 rounded-full opacity-20 blur-3xl animate-float-delay" />
+          <div className="absolute -top-40 -right-40 w-[48rem] h-[48rem] bg-gradient-to-br from-purple-600 to-blue-800 rounded-full opacity-20 blur-3xl animate-float" />
+          <div className="absolute -bottom-40 -left-40 w-[48rem] h-[48rem] bg-gradient-to-br from-pink-600 to-purple-800 rounded-full opacity-20 blur-3xl animate-float-delay" />
         </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div
@@ -94,15 +97,17 @@ function Home() {
             >
               <Link
                 to="/aptitude-test"
-                className="px-8 py-3 text-lg rounded-full font-bold shadow-lg bg-gradient-to-r from-pink-500 to-indigo-600 text-white hover:scale-105 transition-transform duration-200 hover:from-indigo-600 hover:to-pink-600"
+                className="inline-flex items-center justify-center px-8 py-3 text-lg rounded-full font-bold shadow-lg bg-gradient-to-r from-pink-500 to-indigo-600 text-white hover:scale-105 transition-transform duration-200 hover:from-indigo-600 hover:to-pink-600"
               >
                 Take Aptitude Test
+                <ArrowRightIcon className="h-5 w-5 ml-2" />
               </Link>
               <Link
                 to="/course-explorer"
-                className="px-8 py-3 text-lg rounded-full font-bold shadow-lg bg-white text-indigo-700 hover:bg-indigo-100 dark:bg-slate-800 dark:text-purple-200 dark:hover:bg-slate-700"
+                className="inline-flex items-center justify-center px-8 py-3 text-lg rounded-full font-bold shadow-lg bg-white text-indigo-700 hover:bg-indigo-100 dark:bg-slate-800 dark:text-purple-200 dark:hover:bg-slate-700"
               >
                 Explore Courses
+                <ArrowRightIcon className="h-5 w-5 ml-2" />
               </Link>
             </motion.div>
           </motion.div>
@@ -140,9 +145,9 @@ function Home() {
                 </p>
                 <Link
                   to={feature.link}
-                  className="text-purple-400 hover:underline mt-auto"
+                  className="inline-flex items-center text-purple-400 hover:underline mt-auto"
                 >
-                  Learn more →
+                  Learn more <ArrowRightIcon className="h-4 w-4 ml-1" />
                 </Link>
               </motion.div>
             ))}
@@ -188,6 +193,7 @@ function Home() {
   whileHover={{ scale: 1.04, y: -5 }}  // Hover effect: scale up and move up
   className="rounded-2xl bg-black p-7 border border-slate-300 shadow-lg shadow-purple-500/10 transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/20 hover:border-purple-400/50 flex flex-col items-center"
 >
+  <ChatBubbleLeftRightIcon className="h-8 w-8 text-purple-400 mb-4" />
   <p className="text-gray-300 italic mb-4 text-lg relative z-10">
     “{testimonial.quote}”
   </p>
@@ -207,7 +213,7 @@ function Home() {
       </section>
 
       {/* Call to Action Section */}
-      <section className="bg-gradient-to-r from-purple-600 via-pink-500 to-blue-600 py-16">
+      <section className="bg-gradient-to-r from-purple-900 via-pink-800 to-blue-800 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.h2
             initial={{ opacity: 0, scale: 0.95 }}
@@ -223,9 +229,10 @@ function Home() {
           </p>
           <Link
             to="/signup"
-            className="inline-block px-10 py-4 rounded-full bg-white text-purple-700 font-semibold shadow-lg hover:bg-purple-100 transition"
+            className="inline-flex items-center px-10 py-4 rounded-full bg-white text-purple-700 font-semibold shadow-lg hover:bg-purple-100 transition"
           >
             Sign Up Now
+            <UserPlusIcon className="h-6 w-6 ml-2" />
           </Link>
         </div>
       </section>

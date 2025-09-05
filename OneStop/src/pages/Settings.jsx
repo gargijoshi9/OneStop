@@ -77,8 +77,14 @@ function Settings() {
   }
 
   return (
-    <div className="min-h-[60vh] flex items-center justify-center bg-gradient-to-b from-black to-[#101226] py-12">
-      <div className="backdrop-blur-2xl bg-black/90 dark:bg-black/90 border border-gray-700 rounded-2xl shadow-2xl max-w-lg w-full p-8 relative">
+    <div className="relative min-h-screen w-full bg-black overflow-hidden flex items-center justify-center py-12">
+      {/* Animated background */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-[48rem] h-[48rem] bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full opacity-20 blur-3xl animate-float" />
+        <div className="absolute -bottom-40 -left-40 w-[48rem] h-[48rem] bg-gradient-to-br from-fuchsia-500 to-purple-700 rounded-full opacity-20 blur-3xl animate-float-delay" />
+      </div>
+
+      <div className="relative z-10 bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl shadow-2xl max-w-lg w-full p-8">
         {!editMode ? (
           <button
             className="absolute top-5 right-5 text-indigo-400 hover:text-indigo-200 transition"
@@ -110,7 +116,7 @@ function Settings() {
           {/* Profile Photo */}
           <div className="flex flex-col items-center gap-2 mb-4">
             <div
-              className="relative w-24 h-24 group rounded-full overflow-hidden bg-gray-800 border-4 border-indigo-500 shadow cursor-pointer"
+              className="relative w-24 h-24 group rounded-full overflow-hidden bg-white/10 border-4 border-indigo-500 shadow cursor-pointer"
               onClick={() => {
                 if (editMode) fileRef.current.click();
               }}
@@ -134,82 +140,82 @@ function Settings() {
                 </div>
               )}
             </div>
-            <div className="pt-2 text-gray-400 text-xs">Max size: 2MB. PNG/JPG.</div>
+            <div className="pt-2 text-white/60 text-xs">Max size: 2MB. PNG/JPG.</div>
           </div>
 
           {/* Header */}
-          <h2 className="text-3xl font-extrabold mb-3 text-white flex items-center gap-2">
+          <h2 className="text-3xl font-extrabold mb-3 text-white flex items-center justify-center gap-2">
             <UserCircleIcon className="h-8 w-8 text-indigo-400" />
             Account Settings
           </h2>
 
           {/* Details Table */}
           {!editMode ? (
-            <table className="w-full text-white text-left border border-gray-600 rounded-lg">
+            <table className="w-full text-white text-left border border-white/20 rounded-lg">
               <tbody>
-                <tr className="border-b border-gray-600">
+                <tr className="border-b border-white/20">
                   <th className="p-3 font-semibold">Name</th>
                   <td className="p-3">{details.name}</td>
                 </tr>
-                <tr className="border-b border-gray-600">
+                <tr className="border-b border-white/20">
                   <th className="p-3 font-semibold">Email</th>
                   <td className="p-3">{details.email}</td>
                 </tr>
-                <tr className="border-b border-gray-600">
+                <tr className="border-b border-white/20">
                   <th className="p-3 font-semibold">Phone</th>
-                  <td className="p-3">{details.phone || <span className="text-gray-400">Not provided</span>}</td>
+                  <td className="p-3">{details.phone || <span className="text-white/60">Not provided</span>}</td>
                 </tr>
                 <tr>
                   <th className="p-3 font-semibold">Address</th>
-                  <td className="p-3">{details.address || <span className="text-gray-400">Not provided</span>}</td>
+                  <td className="p-3">{details.address || <span className="text-white/60">Not provided</span>}</td>
                 </tr>
               </tbody>
             </table>
           ) : (
             <div className="space-y-4">
               <div>
-                <label className="block mb-1 font-semibold text-white" htmlFor="name">Name</label>
+                <label className="block mb-1 font-semibold text-white/80" htmlFor="name">Name</label>
                 <input
                   id="name"
                   name="name"
                   value={details.name}
                   onChange={handleEditChange}
-                  className="w-full rounded px-3 py-2 text-white"
+                  className="w-full rounded-lg px-3 py-2 text-white bg-white/10 border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-400"
                   required
                 />
               </div>
               <div>
-                <label className="block mb-1 font-semibold text-white" htmlFor="email">Email</label>
+                <label className="block mb-1 font-semibold text-white/80" htmlFor="email">Email</label>
                 <input
                   id="email"
                   type="email"
                   name="email"
                   value={details.email}
                   onChange={handleEditChange}
-                  className="w-full rounded px-3 py-2 text-white"
+                  className="w-full rounded-lg px-3 py-2 text-white bg-white/10 border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-400"
                   required
                 />
               </div>
               <div>
-                <label className="block mb-1 font-semibold text-white" htmlFor="phone">Phone</label>
+                <label className="block mb-1 font-semibold text-white/80" htmlFor="phone">Phone</label>
                 <input
                   id="phone"
                   type="tel"
                   name="phone"
                   value={details.phone}
                   onChange={handleEditChange}
-                  className="w-full rounded px-3 py-2 text-white"
+                  className="w-full rounded-lg px-3 py-2 text-white bg-white/10 border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-400"
                   pattern="[0-9]{10,15}"
                 />
               </div>
               <div>
-                <label className="block mb-1 font-semibold text-white" htmlFor="address">Address</label>
+                <label className="block mb-1 font-semibold text-white/80" htmlFor="address">Address</label>
                 <input
                   id="address"
                   name="address"
                   value={details.address}
                   onChange={handleEditChange}
-                  className="w-full rounded px-3 py-2 text-white"
+                  className="w-full rounded-lg px-3 py-2 text-white bg-white/10 border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
               </div>
             </div>
@@ -218,7 +224,7 @@ function Settings() {
           <button
             type="button"
             onClick={handleLogout}
-            className="w-full mt-6 inline-block text-center bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white font-medium py-3 rounded-lg shadow transition"
+            className="w-full mt-6 inline-block text-center bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white font-medium py-3 rounded-lg shadow-lg transition"
           >
             Logout
           </button>

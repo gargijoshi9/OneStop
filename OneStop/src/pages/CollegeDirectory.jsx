@@ -1,6 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import {
+  MapPinIcon,
+  BookOpenIcon,
+  BuildingLibraryIcon,
+  MagnifyingGlassIcon,
+  StarIcon,
+  BuildingOffice2Icon,
+  LinkIcon,
+  CurrencyRupeeIcon,
+  AcademicCapIcon,
+  ArrowDownTrayIcon,
+  CheckBadgeIcon,
+} from "@heroicons/react/24/outline";
 
 // Mock college data with latitudes and longitudes
 const collegeData = [
@@ -1641,6 +1654,7 @@ function CollegeDirectory() {
     }
 
     // Filter by course
+   
     if (filters.course) {
       result = result.filter((college) =>
         college.courses.some((course) =>
@@ -1675,23 +1689,33 @@ function CollegeDirectory() {
   }, [filters, colleges, userLocation]);
 
   return (
-    <div className="min-h-screen bg-black text-white w-full">
-      <div className="max-w-7xl mx-auto bg-gray-900 rounded-lg p-6">
+    <div className="relative min-h-screen w-full bg-black overflow-hidden">
+      {/* Animated background */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-[48rem] h-[48rem] bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full opacity-20 blur-3xl animate-float" />
+        <div className="absolute -bottom-40 -left-40 w-[48rem] h-[48rem] bg-gradient-to-br from-fuchsia-500 to-purple-700 rounded-full opacity-20 blur-3xl animate-float-delay" />
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto p-6 text-white">
         <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold text-white mb-4">College Directory</h1>
-          <p className="text-gray-400 max-w-3xl mx-auto">
-            Explore top colleges and universities based on your location, course preferences, and more
+          <h1 className="text-4xl font-bold text-white mb-4 tracking-tight flex items-center justify-center gap-3">
+            <BuildingOffice2Icon className="h-10 w-10" />
+            College Directory
+          </h1>
+          <p className="text-white/80 max-w-3xl mx-auto text-lg">
+            Explore top colleges and universities based on your location, course preferences, and more.
           </p>
         </div>
 
         {/* Filters and Find Nearby Button */}
-        <div className="bg-gray-800 p-6 rounded-lg mb-8 border border-gray-700 shadow-md">
+        <div className="bg-white/5 backdrop-blur-lg border border-white/10 p-6 rounded-2xl mb-8 shadow-lg">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
             <div>
               <label
                 htmlFor="location"
-                className="block text-sm font-medium text-gray-400 mb-1"
+                className="block text-sm font-medium text-white/80 mb-1"
               >
+                <MapPinIcon className="h-5 w-5 inline-block mr-1" />
                 Location
               </label>
               <input
@@ -1702,15 +1726,16 @@ function CollegeDirectory() {
                   setFilters((prev) => ({ ...prev, location: e.target.value }))
                 }
                 placeholder="City or State"
-                className="w-full px-3 py-2 rounded border border-gray-700 bg-gray-900 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                className="w-full px-3 py-2 rounded-lg border border-white/20 bg-white/10 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
             </div>
 
             <div>
               <label
                 htmlFor="course"
-                className="block text-sm font-medium text-gray-400 mb-1"
+                className="block text-sm font-medium text-white/80 mb-1"
               >
+                <BookOpenIcon className="h-5 w-5 inline-block mr-1" />
                 Course
               </label>
               <input
@@ -1721,15 +1746,16 @@ function CollegeDirectory() {
                   setFilters((prev) => ({ ...prev, course: e.target.value }))
                 }
                 placeholder="B.Tech, BBA, B.Sc, etc."
-                className="w-full px-3 py-2 rounded border border-gray-700 bg-gray-900 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                className="w-full px-3 py-2 rounded-lg border border-white/20 bg-white/10 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
             </div>
 
             <div>
               <label
                 htmlFor="type"
-                className="block text-sm font-medium text-gray-400 mb-1"
+                className="block text-sm font-medium text-white/80 mb-1"
               >
+                <BuildingLibraryIcon className="h-5 w-5 inline-block mr-1" />
                 Institution Type
               </label>
               <select
@@ -1738,7 +1764,7 @@ function CollegeDirectory() {
                 onChange={(e) =>
                   setFilters((prev) => ({ ...prev, type: e.target.value }))
                 }
-                className="w-full px-3 py-2 rounded border border-gray-700 bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                className="w-full px-3 py-2 rounded-lg border border-white/20 bg-white/10 text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
               >
                 <option value="all">All Types</option>
                 <option value="Public">Public</option>
@@ -1749,114 +1775,142 @@ function CollegeDirectory() {
             <button
               onClick={findNearbyColleges}
               disabled={isFindingLocation}
-              className="w-full flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600"
+              className="w-full flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black focus:ring-blue-500 transition-all duration-300"
             >
+              <MagnifyingGlassIcon className="h-5 w-5 mr-2" />
               {isFindingLocation ? "Finding..." : "Find Nearby Colleges"}
             </button>
           </div>
-          {locationError && <p className="mt-2 text-red-500 text-sm">{locationError}</p>}
+          {locationError && <p className="mt-2 text-red-400 text-sm">{locationError}</p>}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* College List */}
-          <div className="lg:col-span-1 bg-gray-900 border border-gray-700 rounded-lg shadow-md overflow-y-auto max-h-[600px]">
-            <div className="p-4 border-b border-gray-700">
+          <div className="lg:col-span-1 bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg overflow-hidden">
+            <div className="p-4 border-b border-white/10">
               <h2 className="text-lg font-semibold text-white">
                 Colleges ({filteredColleges.length})
               </h2>
             </div>
-
-            {loading ? (
-              <div className="p-8 text-center text-gray-400">
-                Loading colleges...
-              </div>
-            ) : filteredColleges.length > 0 ? (
-              filteredColleges.map((college) => (
-                <div
-                  key={college.id}
-                  className={`p-4 cursor-pointer border-b border-gray-700 hover:bg-blue-900 transition ${
-                    selectedCollege?.id === college.id ? "bg-blue-800" : ""
-                  }`}
-                  onClick={() => setSelectedCollege(college)}
-                >
-                  <div className="flex items-center space-x-4">
-                    <div className="h-12 w-12 bg-gray-800 flex items-center justify-center rounded">
-                      <span className="text-xl text-gray-400 font-bold">{college.name.charAt(0)}</span>
-                    </div>
-                    <div>
-                      <h3 className="text-white font-semibold">{college.name}</h3>
-                      <p className="text-gray-400">{college.location}</p>
-                      {userLocation && college.distance !== undefined && (
-                        <p className="text-xs text-gray-500">{college.distance.toFixed(2)} km away</p>
-                      )}
-                      <div className="flex items-center space-x-1 mt-1">
-                        <span className="text-yellow-400 font-semibold">{college.rating}</span>
-                        <div className="flex space-x-0.5">
-                          {Array.from({ length: Math.floor(college.rating) }).map((_, i) => (
-                            <svg key={i} className="w-4 h-4 fill-yellow-400" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21 16.54 13.97 22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
-                          ))}
+            <div className="overflow-y-auto max-h-[600px]">
+              {loading ? (
+                <div className="p-8 text-center text-white/70">
+                  Loading colleges...
+                </div>
+              ) : filteredColleges.length > 0 ? (
+                filteredColleges.map((college) => (
+                  <div
+                    key={college.id}
+                    className={`p-4 cursor-pointer border-b border-white/10 transition-all duration-300 ${
+                      selectedCollege?.id === college.id ? "bg-white/20" : "hover:bg-white/10"
+                    }`}
+                    onClick={() => setSelectedCollege(college)}
+                  >
+                    <div className="flex items-center space-x-4">
+                      <div className="h-12 w-12 bg-white/10 flex items-center justify-center rounded-lg">
+                        <span className="text-xl text-white/80 font-bold">{college.name.charAt(0)}</span>
+                      </div>
+                      <div>
+                        <h3 className="text-white font-semibold">{college.name}</h3>
+                        <p className="text-white/70">{college.location}</p>
+                        {userLocation && college.distance !== undefined && (
+                          <p className="text-xs text-white/60">{college.distance.toFixed(2)} km away</p>
+                        )}
+                        <div className="flex items-center space-x-1 mt-1">
+                          <span className="text-yellow-400 font-semibold">{college.rating}</span>
+                          <div className="flex space-x-0.5">
+                            {Array.from({ length: 5 }).map((_, i) => (
+                              <StarIcon
+                                key={i}
+                                className={`w-4 h-4 ${
+                                  i < Math.floor(college.rating)
+                                    ? "text-yellow-400"
+                                    : "text-gray-600"
+                                }`}
+                              />
+                            ))}
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
+                ))
+              ) : (
+                <div className="p-8 text-center text-white/70">
+                  No colleges found matching your filters.
+                  <button
+                    className="mt-4 px-4 py-2 border border-blue-500 rounded-lg text-blue-400 hover:bg-blue-500 hover:text-black transition-all"
+                    onClick={() => {
+                      setFilters({ location: "", course: "", type: "all" });
+                      setUserLocation(null);
+                    }}
+                  >
+                    Reset Filters
+                  </button>
                 </div>
-              ))
-            ) : (
-              <div className="p-8 text-center text-gray-400">
-                No colleges found matching your filters.
-                <button
-                  className="mt-4 px-4 py-2 border border-blue-700 rounded text-blue-500 hover:bg-blue-900"
-                  onClick={() => {
-                    setFilters({ location: "", course: "", type: "all" });
-                    setUserLocation(null);
-                  }}
-                >
-                  Reset Filters
-                </button>
-              </div>
-            )}
+              )}
+            </div>
           </div>
 
           {/* Map and College Details */}
           <div className="lg:col-span-2 flex flex-col space-y-6">
-            {/* Map Container with padding to show black border */}
+            {/* Map Container */}
             <div
-              className="bg-gray-900 border border-gray-700 rounded-lg shadow-md p-4 flex justify-center items-center"
+              className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg p-2"
               style={{ height: "300px" }}
             >
               <div
                 ref={mapRef}
-                className="w-full h-full rounded-md"
-                style={{ margin: "10px" }}
+                className="w-full h-full rounded-xl"
               />
             </div>
 
             {/* Selected College Details */}
             {selectedCollege ? (
-              <div className="bg-gray-900 border border-gray-700 rounded-lg shadow-md p-6">
+              <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg p-6">
                 <h2 className="text-white text-xl font-semibold mb-4">College Details</h2>
-                <div className="flex space-x-6">
-                  <div className="h-20 w-20 bg-gray-800 rounded flex items-center justify-center">
-                    <span className="text-gray-400 text-3xl font-bold">{selectedCollege.name.charAt(0)}</span>
+                <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6">
+                  <div className="h-20 w-20 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <AcademicCapIcon className="h-12 w-12 text-white/80" />
                   </div>
-                  <div className="flex-1 text-gray-300">
+                  <div className="flex-1 text-white/80">
                     <h3 className="text-2xl font-bold text-white">{selectedCollege.name}</h3>
                     <p>{selectedCollege.location}</p>
                     <p className="mt-1">{selectedCollege.description}</p>
 
                     <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <strong>Type:</strong> {selectedCollege.type}
+                        <strong>
+                          <BuildingLibraryIcon className="h-5 w-5 inline-block mr-1" />
+                          Type:
+                        </strong>{" "}
+                        {selectedCollege.type}
                       </div>
                       <div>
-                        <strong>Ranking:</strong> {selectedCollege.ranking}
+                        <strong>
+                          <CheckBadgeIcon className="h-5 w-5 inline-block mr-1" />
+                          Ranking:
+                        </strong>{" "}
+                        {selectedCollege.ranking}
                       </div>
                       <div>
-                        <strong>Fees:</strong> {selectedCollege.fees}
+                        <strong>
+                          <CurrencyRupeeIcon className="h-5 w-5 inline-block mr-1" />
+                          Fees:
+                        </strong>{" "}
+                        {selectedCollege.fees}
                       </div>
                       <div>
-                        <strong>Website:</strong>{" "}
-                        <a href={selectedCollege.website} className="text-blue-400 hover:underline">
+                        <strong>
+                          <LinkIcon className="h-5 w-5 inline-block mr-1" />
+                          Website:
+                        </strong>{" "}
+                        <a
+                          href={selectedCollege.website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-400 hover:underline"
+                        >
                           {selectedCollege.website}
                         </a>
                       </div>
@@ -1868,7 +1922,7 @@ function CollegeDirectory() {
                         {selectedCollege.courses.map((course, idx) => (
                           <span
                             key={idx}
-                            className="bg-blue-900 text-blue-400 px-2 py-1 rounded-md text-xs font-medium"
+                            className="bg-blue-500/20 text-blue-300 px-2 py-1 rounded-md text-xs font-medium"
                           >
                             {course}
                           </span>
@@ -1879,14 +1933,16 @@ function CollegeDirectory() {
                     <div className="mt-6 space-x-4">
                       <a
                         href="#"
-                        className="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded shadow font-semibold"
+                        className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow font-semibold transition-all"
                       >
+                        <AcademicCapIcon className="h-5 w-5" />
                         Apply Now
                       </a>
                       <a
                         href="#"
-                        className="bg-gray-800 hover:bg-gray-700 text-gray-200 px-4 py-2 rounded shadow font-semibold"
+                        className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white/90 px-4 py-2 rounded-lg shadow font-semibold transition-all"
                       >
+                        <ArrowDownTrayIcon className="h-5 w-5" />
                         Download Brochure
                       </a>
                     </div>
@@ -1894,21 +1950,8 @@ function CollegeDirectory() {
                 </div>
               </div>
             ) : (
-              <div className="bg-gray-900 border border-gray-700 rounded-lg shadow-md p-8 text-center text-gray-400">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="mx-auto h-12 w-12 mb-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16"
-                  />
-                </svg>
+              <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg p-8 text-center text-white/70">
+                <BuildingOffice2Icon className="mx-auto h-12 w-12 mb-4" />
                 <p>Select a college from the list to view detailed information.</p>
               </div>
             )}

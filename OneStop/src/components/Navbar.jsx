@@ -1,4 +1,17 @@
-import { FolderOpenIcon, UserIcon, ArrowRightOnRectangleIcon } from "@heroicons/react/24/solid";
+import {
+  FolderOpenIcon,
+  UserIcon,
+  ArrowRightOnRectangleIcon,
+  HomeIcon,
+  BeakerIcon,
+  MagnifyingGlassIcon,
+  BuildingOfficeIcon,
+  CalendarDaysIcon,
+  Bars3Icon,
+  XMarkIcon,
+  ChevronDownIcon,
+  UserPlusIcon,
+} from "@heroicons/react/24/solid";
 
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -50,17 +63,38 @@ function Navbar() {
           {/* Desktop Navigation */}
           <div className="hidden md:flex md:items-center md:space-x-6">
             {[
-              { to: "/", label: "Home" },
-              { to: "/aptitude-test", label: "Aptitude Test" },
-              { to: "/course-explorer", label: "Course Explorer" },
-              { to: "/college-directory", label: "Colleges" },
-              { to: "/timeline", label: "Timeline" },
-            ].map(({ to, label }) => (
-              <Link
-                key={label}
-                to={to}
-                className="text-white hover:text-indigo-400 transition duration-200 font-medium"
-              >
+              {
+                to: "/",
+                label: "Home",
+                icon: <HomeIcon className="w-5 h-5" />,
+              },
+            {
+              to: "/aptitude-test",
+              label: "Aptitude Test",
+              icon: <BeakerIcon className="w-5 h-5" />,
+            },
+            {
+              to: "/course-explorer",
+              label: "Course Explorer",
+              icon: <MagnifyingGlassIcon className="w-5 h-5" />,
+            },
+            {
+              to: "/college-directory",
+              label: "Colleges",
+              icon: <BuildingOfficeIcon className="w-5 h-5" />,
+            },
+            {
+              to: "/timeline",
+              label: "Timeline",
+              icon: <CalendarDaysIcon className="w-5 h-5" />,
+            },
+          ].map(({ to, label, icon }) => (
+            <Link
+              key={label}
+              to={to}
+              className="flex items-center gap-2 text-white hover:text-indigo-400 transition duration-200 font-medium"
+            >
+                {icon}
                 {label}
               </Link>
             ))}
@@ -74,18 +108,14 @@ function Navbar() {
                   aria-expanded={profileOpen}
                 >
                   <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold">
-                    {user.name ? user.name[0].toUpperCase() : "U"}
+                    {user.name ? user.name[0].toUpperCase() : <UserIcon className="w-5 h-5" />}
                   </div>
                   <span className="text-white font-medium">{user.name}</span>
-                  <svg
+                  <ChevronDownIcon
                     className={`w-5 h-5 text-white transition-transform ${
                       profileOpen ? "rotate-180" : ""
                     }`}
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path d="M5.23 7.21a.75.75 0 011.06.02L10 11.293l3.71-4.06a.75.75 0 111.08 1.04l-4.25 4.65a.75.75 0 01-1.08 0L5.23 8.27a.75.75 0 01.002-1.06z" />
-                  </svg>
+                  />
                 </button>
 
                 {/* Dropdown */}
@@ -121,14 +151,16 @@ function Navbar() {
               <>
                 <Link
                   to="/login"
-                  className="px-4 py-2 bg-indigo-600 rounded text-white font-medium hover:bg-indigo-500 transition"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 rounded text-white font-medium hover:bg-indigo-500 transition"
                 >
+                  <ArrowRightOnRectangleIcon className="w-5 h-5" />
                   Login
                 </Link>
                 <Link
                   to="/signup"
-                  className="ml-3 px-4 py-2 border border-indigo-600 rounded text-indigo-600 font-medium hover:bg-indigo-600 hover:text-white transition"
+                  className="ml-3 inline-flex items-center gap-2 px-4 py-2 border border-indigo-600 rounded text-indigo-600 font-medium hover:bg-indigo-600 hover:text-white transition"
                 >
+                  <UserPlusIcon className="w-5 h-5" />
                   Signup
                 </Link>
               </>
@@ -143,35 +175,9 @@ function Navbar() {
               aria-expanded={isOpen}
             >
               {isOpen ? (
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <XMarkIcon className="w-6 h-6" />
               ) : (
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
+                <Bars3Icon className="w-6 h-6" />
               )}
             </button>
           </div>
@@ -183,18 +189,39 @@ function Navbar() {
         <div className="md:hidden bg-black border-t border-gray-800 shadow-lg">
           <div className="px-4 py-4 space-y-4">
             {[
-              { to: "/", label: "Home" },
-              { to: "/aptitude-test", label: "Aptitude Test" },
-              { to: "/course-explorer", label: "Course Explorer" },
-              { to: "/college-directory", label: "Colleges" },
-              { to: "/timeline", label: "Timeline" },
-            ].map(({ to, label }) => (
+              {
+                to: "/",
+                label: "Home",
+                icon: <HomeIcon className="w-5 h-5" />,
+              },
+            {
+              to: "/aptitude-test",
+              label: "Aptitude Test",
+              icon: <BeakerIcon className="w-5 h-5" />,
+            },
+            {
+              to: "/course-explorer",
+              label: "Course Explorer",
+              icon: <MagnifyingGlassIcon className="w-5 h-5" />,
+            },
+            {
+              to: "/college-directory",
+              label: "Colleges",
+              icon: <BuildingOfficeIcon className="w-5 h-5" />,
+            },
+            {
+              to: "/timeline",
+              label: "Timeline",
+              icon: <CalendarDaysIcon className="w-5 h-5" />,
+            },
+            ].map(({ to, label, icon }) => (
               <Link
                 key={label}
                 to={to}
                 onClick={() => setIsOpen(false)}
-                className="block px-3 py-2 rounded text-white hover:bg-gray-800 transition"
+                className="flex items-center gap-3 px-3 py-2 rounded text-white hover:bg-gray-800 transition"
               >
+                {icon}
                 {label}
               </Link>
             ))}
@@ -234,15 +261,17 @@ function Navbar() {
                 <Link
                   to="/login"
                   onClick={() => setIsOpen(false)}
-                  className="block px-3 py-2 rounded text-white hover:bg-gray-800"
+                  className="flex items-center gap-3 px-3 py-2 rounded text-white hover:bg-gray-800"
                 >
+                  <ArrowRightOnRectangleIcon className="w-5 h-5 text-indigo-400" />
                   Login
                 </Link>
                 <Link
                   to="/signup"
                   onClick={() => setIsOpen(false)}
-                  className="block px-3 py-2 rounded border border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white"
+                  className="flex items-center gap-3 px-3 py-2 rounded border border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white"
                 >
+                  <UserPlusIcon className="w-5 h-5" />
                   Signup
                 </Link>
               </>
