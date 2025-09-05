@@ -174,7 +174,7 @@ function Settings() {
                   name="name"
                   value={details.name}
                   onChange={handleEditChange}
-                  className="w-full rounded px-3 py-2 text-black"
+                  className="w-full rounded px-3 py-2 text-white"
                   required
                 />
               </div>
@@ -186,7 +186,7 @@ function Settings() {
                   name="email"
                   value={details.email}
                   onChange={handleEditChange}
-                  className="w-full rounded px-3 py-2 text-black"
+                  className="w-full rounded px-3 py-2 text-white"
                   required
                 />
               </div>
@@ -198,7 +198,7 @@ function Settings() {
                   name="phone"
                   value={details.phone}
                   onChange={handleEditChange}
-                  className="w-full rounded px-3 py-2 text-black"
+                  className="w-full rounded px-3 py-2 text-white"
                   pattern="[0-9]{10,15}"
                 />
               </div>
@@ -209,7 +209,7 @@ function Settings() {
                   name="address"
                   value={details.address}
                   onChange={handleEditChange}
-                  className="w-full rounded px-3 py-2 text-black"
+                  className="w-full rounded px-3 py-2 text-white"
                 />
               </div>
             </div>
