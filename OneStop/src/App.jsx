@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import AptitudeTest from "./pages/AptitudeTest";
+import Result from "./pages/Result";
 import CourseExplorer from "./pages/CourseExplorer";
 import CollegeDirectory from "./pages/CollegeDirectory";
 import Login from "./pages/Login";
@@ -28,6 +29,7 @@ function AppContent() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/timeline" element={<Timeline />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/result" element={<Result />} />
         </Routes>
       </main>
       {location.pathname !== "/settings" && <Footer />}
@@ -37,9 +39,22 @@ function AppContent() {
 
 function App() {
   return (
-    <AuthProvider>
+         <AuthProvider>
       <Router>
-        <AppContent />
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/aptitude-test" element={<AptitudeTest />} />
+          <Route path="/result" element={<Result />} />
+          <Route path="/course-explorer" element={<CourseExplorer />} />
+          <Route path="/college-directory" element={<CollegeDirectory />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/timeline" element={<Timeline />} />
+          <Route path="/settings" element={<Settings />} />
+          {/* Add additional routes here as needed */}
+        </Routes>
+        <Footer />
       </Router>
     </AuthProvider>
   );

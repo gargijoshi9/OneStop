@@ -1,583 +1,539 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { Calculator, Brain, Lightbulb, Users } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
-import Login from "./Login"; // Assuming you have a Login component
-import {
-  ArrowPathIcon,
-  LightBulbIcon,
-  BeakerIcon,
-  BriefcaseIcon,
-  CheckCircleIcon,
-  ArrowRightCircleIcon,
-  ExclamationTriangleIcon,
-  PaintBrushIcon,
-  BookOpenIcon,
-} from "@heroicons/react/24/outline";
+import { motion } from "framer-motion"; // added for animation like Home.jsx
 
-function AptitudeTest() {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [showResult, setShowResult] = useState(false);
+// ====================== QUIZ DATA ======================
+const quizzes = [
+  {
+    id: "aptitude",
+    title: "Aptitude Assessment",
+    description: "Test your mathematical, verbal, and analytical abilities",
+    timeLimit: 30,
+    questions: [
+      {
+        id: "apt1",
+        type: "multiple-choice",
+        category: "mathematical",
+        text: "If a train travels 60 km in 45 minutes, what is its speed in km/hr?",
+        options: ["70 km/hr", "80 km/hr", "85 km/hr", "90 km/hr"],
+        correctAnswer: "80 km/hr",
+        weight: 1,
+      },
+      {
+        id: "apt2",
+        type: "multiple-choice",
+        category: "verbal",
+        text: 'Choose the word that is most opposite in meaning to "AMBITIOUS":',
+        options: ["Lazy", "Indifferent", "Content", "Unaspiring"],
+        correctAnswer: "Unaspiring",
+        weight: 1,
+      },
+      {
+        id: "apt3",
+        type: "multiple-choice",
+        category: "analytical",
+        text: "In a sequence 2, 6, 12, 20, 30, what comes next?",
+        options: ["40", "42", "44", "46"],
+        correctAnswer: "42",
+        weight: 1,
+      },
+      {
+        id: "apt4",
+        type: "multiple-choice",
+        category: "mathematical",
+        text: "What is 15% of 240?",
+        options: ["32", "36", "38", "40"],
+        correctAnswer: "36",
+        weight: 1,
+      },
+      {
+        id: "apt5",
+        type: "multiple-choice",
+        category: "verbal",
+        text: "Complete the analogy: Book : Author :: Painting : ?",
+        options: ["Canvas", "Artist", "Color", "Gallery"],
+        correctAnswer: "Artist",
+        weight: 1,
+      },
+    ],
+  },
+  {
+    id: "logical",
+    title: "Logical Reasoning",
+    description: "Evaluate your logical thinking and problem-solving skills",
+    timeLimit: 30,
+    questions: [
+      {
+        id: "log1",
+        type: "multiple-choice",
+        category: "deduction",
+        text: "All roses are flowers. Some flowers fade quickly. Therefore:",
+        options: [
+          "All roses fade quickly",
+          "Some roses fade quickly",
+          "No roses fade quickly",
+          "Cannot be determined",
+        ],
+        correctAnswer: "Cannot be determined",
+        weight: 1,
+      },
+      {
+        id: "log2",
+        type: "multiple-choice",
+        category: "pattern",
+        text: "Which figure completes the pattern? △ ○ □ △ ○ ?",
+        options: ["△", "○", "□", "◇"],
+        correctAnswer: "□",
+        weight: 1,
+      },
+      {
+        id: "log3",
+        type: "multiple-choice",
+        category: "syllogism",
+        text: "If all A are B, and all B are C, then:",
+        options: [
+          "All A are C",
+          "Some A are C",
+          "No A are C",
+          "Cannot determine",
+        ],
+        correctAnswer: "All A are C",
+        weight: 1,
+      },
+      {
+        id: "log4",
+        type: "multiple-choice",
+        category: "coding",
+        text: "In a certain code, FLOWER is written as EKNVDQ. How is GARDEN written?",
+        options: ["FZQCDK", "FZQCDM", "FZQEDN", "FZQECM"],
+        correctAnswer: "FZQCDM",
+        weight: 1,
+      },
+    ],
+  },
+  {
+    id: "cognitive",
+    title: "Cognitive Skills Assessment",
+    description: "Measure your memory, attention, and processing speed",
+    timeLimit: 30,
+    questions: [
+      {
+        id: "cog1",
+        type: "multiple-choice",
+        category: "memory",
+        text: "Study this sequence for 5 seconds: 7, 3, 9, 1, 5, 8, 2. What was the 4th number?",
+        options: ["1", "3", "5", "9"],
+        correctAnswer: "1",
+        weight: 1,
+      },
+      {
+        id: "cog2",
+        type: "multiple-choice",
+        category: "attention",
+        text: 'Count the number of Es in: "EXCELLENCE IN EVERY ENDEAVOR"',
+        options: ["6", "7", "8", "9"],
+        correctAnswer: "8",
+        weight: 1,
+      },
+      {
+        id: "cog3",
+        type: "multiple-choice",
+        category: "processing",
+        text: "Which word can be formed using the letters of CREATION?",
+        options: ["REACTION", "LOCATION", "OPERATION", "EDUCATION"],
+        correctAnswer: "REACTION",
+        weight: 1,
+      },
+      {
+        id: "cog4",
+        type: "multiple-choice",
+        category: "spatial",
+        text: "If you rotate a square 90° clockwise, then 180°, what is the total rotation?",
+        options: ["90°", "180°", "270°", "360°"],
+        correctAnswer: "270°",
+        weight: 1,
+      },
+    ],
+  },
+  {
+    id: "personality",
+    title: "Personality Assessment",
+    description: "Discover your personality traits and working preferences",
+    timeLimit: 30,
+    questions: [
+      {
+        id: "per1",
+        type: "rating",
+        category: "extraversion",
+        text: "I enjoy being the center of attention in social gatherings",
+        weight: 1,
+      },
+      {
+        id: "per2",
+        type: "rating",
+        category: "conscientiousness",
+        text: "I always complete my tasks on time and follow schedules strictly",
+        weight: 1,
+      },
+      {
+        id: "per3",
+        type: "rating",
+        category: "openness",
+        text: "I enjoy trying new experiences and learning about different cultures",
+        weight: 1,
+      },
+      {
+        id: "per4",
+        type: "rating",
+        category: "agreeableness",
+        text: "I prefer to avoid conflicts and maintain harmony in groups",
+        weight: 1,
+      },
+      {
+        id: "per5",
+        type: "rating",
+        category: "neuroticism",
+        text: "I often feel stressed and worry about things beyond my control",
+        weight: 1,
+      },
+      {
+        id: "per6",
+        type: "multiple-choice",
+        category: "work-style",
+        text: "Which work environment appeals to you most?",
+        options: [
+          "Fast-paced, dynamic startup",
+          "Structured corporate environment",
+          "Creative, flexible workspace",
+          "Independent, remote work",
+        ],
+      },
+    ],
+  },
+];
+
+const likertLabels = [
+  "Strongly Disagree",
+  "Disagree",
+  "Neutral",
+  "Agree",
+  "Strongly Agree",
+];
+
+// ====================== QUIZ COMPONENT ======================
+function Quiz({ quiz, onComplete, onBack }) {
   const [answers, setAnswers] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [questions, setQuestions] = useState([]);
-  const { user } = useAuth(); // Get the user object from the AuthContext
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-  useEffect(() => {
-    if (!user) {
-      // User is not logged in, so we don't need to fetch questions yet.
-      setLoading(false);
-      return;
-    }
+  const handleChange = (qid, value) => {
+    setAnswers((prev) => ({ ...prev, [qid]: value }));
+  };
 
-    const fetchQuestions = async () => {
-      try {
-        await new Promise((r) => setTimeout(r, 600)); // simulate delay
-
-        const mockQuestions = [
-          {
-            id: 1,
-            question: "Which activity do you enjoy the most?",
-            options: [
-              "Solving mathematical problems",
-              "Writing stories or essays",
-              "Working with tools and machinery",
-              "Understanding human behavior",
-              "Managing teams or organizing events",
-            ],
-            category: "interests",
-          },
-          {
-            id: 2,
-            question:
-              "When working on a group project, what role do you naturally take?",
-            options: [
-              "The creative idea generator",
-              "The detailed planner and organizer",
-              "The data analyst and researcher",
-              "The communicator and presenter",
-              "The technical problem solver",
-            ],
-            category: "personality",
-          },
-          {
-            id: 3,
-            question: "Which subject did you find most engaging in school?",
-            options: [
-              "Mathematics or Physics",
-              "Languages or Literature",
-              "Biology or Chemistry",
-              "History or Civics",
-              "Computer Science or Information Technology",
-            ],
-            category: "academics",
-          },
-          {
-            id: 4,
-            question: "How do you prefer to learn new information?",
-            options: [
-              "By reading and researching independently",
-              "Through hands-on practical experience",
-              "By discussing with others in a group",
-              "Through visual aids and demonstrations",
-              "By teaching or explaining to others",
-            ],
-            category: "learning",
-          },
-          {
-            id: 5,
-            question: "What kind of challenges motivate you the most?",
-            options: [
-              "Solving complex analytical problems",
-              "Creating something innovative or artistic",
-              "Helping others overcome their difficulties",
-              "Mastering a technical skill",
-              "Leading a team to achieve goals",
-            ],
-            category: "motivation",
-          },
-          {
-            id: 6,
-            question: "When faced with a difficult problem, you typically:",
-            options: [
-              "Break it down into smaller, manageable parts",
-              "Look for creative, unconventional solutions",
-              "Research how others have solved similar problems",
-              "Discuss it with friends or colleagues",
-              "Trust your intuition to guide you",
-            ],
-            category: "problem_solving",
-          },
-          {
-            id: 7,
-            question: "What type of work environment do you prefer?",
-            options: [
-              "Structured with clear guidelines",
-              "Flexible and autonomous",
-              "Collaborative and team-oriented",
-              "Fast-paced and challenging",
-              "Calm and quiet",
-            ],
-            category: "work_environment",
-          },
-          {
-            id: 8,
-            question:
-              "Which of these activities would you choose for a free afternoon?",
-            options: [
-              "Reading a non-fiction book",
-              "Creating art or music",
-              "Playing sports or physical activity",
-              "Socializing with friends",
-              "Working on a DIY project",
-            ],
-            category: "leisure",
-          },
-          {
-            id: 9,
-            question: "How do you typically make important decisions?",
-            options: [
-              "Analyze all available data and information",
-              "Consider your feelings and values",
-              "Seek advice from trusted mentors",
-              "Weigh pros and cons methodically",
-              "Go with your gut feeling",
-            ],
-            category: "decision_making",
-          },
-          {
-            id: 10,
-            question: "Which skill would you most like to develop further?",
-            options: [
-              "Technical or analytical skills",
-              "Creative thinking and expression",
-              "Leadership and management",
-              "Communication and interpersonal skills",
-              "Research and information processing",
-            ],
-            category: "development",
-          },
-          {
-            id: 11,
-            question: "What aspect of a career is most important to you?",
-            options: [
-              "Intellectual stimulation and challenges",
-              "Work-life balance",
-              "Financial stability and growth",
-              "Helping others and making a difference",
-              "Recognition and status",
-            ],
-            category: "career_values",
-          },
-          {
-            id: 12,
-            question: "How do you react to unexpected changes?",
-            options: [
-              "Analyze the situation and adapt quickly",
-              "Feel uncomfortable initially but adjust eventually",
-              "Embrace change as an opportunity",
-              "Prefer stability and consistent routines",
-              "Depends entirely on the specific change",
-            ],
-            category: "adaptability",
-          },
-          {
-            id: 13,
-            question: "Which technological field interests you the most?",
-            options: [
-              "Artificial Intelligence and Machine Learning",
-              "Digital Media and Content Creation",
-              "Hardware and Engineering",
-              "Healthcare and Biotech",
-              "None - I prefer non-technical fields",
-            ],
-            category: "tech_interests",
-          },
-          {
-            id: 14,
-            question: "How important is creativity in your ideal career?",
-            options: [
-              "Extremely important - I need creative freedom",
-              "Somewhat important - I like some creative aspects",
-              "Neutral - It depends on the specific role",
-              "Less important - I prefer structured work",
-              "Not important - I focus on other job aspects",
-            ],
-            category: "creativity",
-          },
-          {
-            id: 15,
-            question:
-              "Which of these would you enjoy researching in your free time?",
-            options: [
-              "Scientific discoveries and innovations",
-              "Philosophy and abstract concepts",
-              "History and cultural studies",
-              "Business strategies and market trends",
-              "Self-improvement and psychology",
-            ],
-            category: "intellectual_interests",
-          },
-        ];
-
-        setQuestions(mockQuestions);
-        setLoading(false);
-      } catch (err) {
-        console.error(err);
-        setError("Failed to load questions. Please try again later.");
-        setLoading(false);
-      }
-    };
-
-    fetchQuestions();
-  }, [user]);
-
-  const handleAnswer = (questionId, answerIndex) => {
-    setAnswers((prev) => ({ ...prev, [questionId]: answerIndex }));
-
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion((prev) => prev + 1);
-    } else {
-      setShowResult(true);
+  const handleNext = () => {
+    if (currentIndex < quiz.questions.length - 1) {
+      setCurrentIndex((prev) => prev + 1);
     }
   };
 
-  const resetTest = () => {
-    setCurrentQuestion(0);
-    setShowResult(false);
-    setAnswers({});
+  const handlePrev = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex((prev) => prev - 1);
+    }
   };
 
-  const getRecommendations = () => {
-    let scienceScore = 0;
-    let artsScore = 0;
-    let commerceScore = 0;
-
-    Object.entries(answers).forEach(([questionId, answer]) => {
-      const qId = parseInt(questionId, 10);
-      const ans = parseInt(answer, 10);
-
-      // Science-oriented answers
-      if ([1, 3, 5, 6, 10, 13].includes(qId) && [0, 2, 4].includes(ans)) {
-        scienceScore++;
-      }
-
-      // Arts-oriented answers
-      if ([1, 2, 3, 8, 10, 14].includes(qId) && [1, 3].includes(ans)) {
-        artsScore++;
-      }
-
-      // Commerce-oriented answers
-      if ([2, 4, 7, 9, 11].includes(qId) && [1, 4].includes(ans)) {
-        commerceScore++;
+  const handleSubmit = () => {
+    let score = 0;
+    let total = 0;
+    quiz.questions.forEach((q) => {
+      if (q.type === "multiple-choice") {
+        total += q.weight;
+        if (answers[q.id] === q.correctAnswer) {
+          score += q.weight;
+        }
       }
     });
-
-    const scores = {
-      Science: scienceScore,
-      Arts: artsScore,
-      Commerce: commerceScore,
-    };
-
-    const recommendedStream = Object.keys(scores).reduce((a, b) =>
-      scores[a] > scores[b] ? a : b
-    );
-
-    const recommendations = {
-      Science: {
-        courses: [
-          "B.Sc. Physics",
-          "B.Sc. Computer Science",
-          "B.Tech",
-          "B.Sc. Mathematics",
-          "MBBS",
-          "B.Pharm",
-        ],
-        careers: [
-          "Research Scientist",
-          "Data Analyst",
-          "Software Engineer",
-          "Doctor",
-          "Pharmacist",
-          "Environmental Scientist",
-        ],
-      },
-      Arts: {
-        courses: [
-          "B.A. English",
-          "B.A. Psychology",
-          "B.A. Sociology",
-          "B.A. Political Science",
-          "B.A. Economics",
-          "B.A. History",
-        ],
-        careers: [
-          "Content Writer",
-          "Social Worker",
-          "Teacher",
-          "Journalist",
-          "Diplomat",
-          "Heritage Consultant",
-        ],
-      },
-      Commerce: {
-        courses: [
-          "B.Com",
-          "BBA",
-          "B.Com (Accounting & Finance)",
-          "Chartered Accountancy",
-          "B.Com (Banking & Insurance)",
-          "BMS",
-        ],
-        careers: [
-          "Accountant",
-          "Business Manager",
-          "Financial Analyst",
-          "Entrepreneur",
-          "Investment Banker",
-          "Marketing Executive",
-        ],
-      },
-    };
-
-    return {
-      stream: recommendedStream,
-      courses: recommendations[recommendedStream].courses,
-      careers: recommendations[recommendedStream].careers,
-      scores,
-    };
+    const percentage = total > 0 ? Math.round((score / total) * 100) : 0;
+    onComplete({ quizId: quiz.id, percentage });
   };
 
-  if (!user) {
-    // If the user is not logged in, render the login component.
-    return <Login />;
-  }
-
-  if (loading) {
-    return (
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="text-center">
-          <ArrowPathIcon className="h-12 w-12 text-blue-500 animate-spin mx-auto" />
-          <p className="mt-4 text-lg text-gray-600">Loading questions...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="text-center">
-          <div className="bg-red-50 p-4 rounded-md inline-flex flex-col items-center">
-            <ExclamationTriangleIcon className="h-10 w-10 text-red-500 mb-2" />
-            <p className="text-red-800">{error}</p>
-            <button
-              onClick={() => window.location.reload()}
-              className="mt-4 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
-            >
-              Try Again
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const question = quiz.questions[currentIndex];
 
   return (
-    <div className="relative min-h-screen w-full bg-black overflow-hidden flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      {/* Animated background */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-[48rem] h-[48rem] bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full opacity-20 blur-3xl animate-float" />
-        <div className="absolute -bottom-40 -left-40 w-[48rem] h-[48rem] bg-gradient-to-br from-fuchsia-500 to-purple-700 rounded-full opacity-20 blur-3xl animate-float-delay" />
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className="max-w-3xl mx-auto bg-black border border-gray-700 p-8 rounded-2xl shadow-2xl shadow-purple-500/20"
+    >
+      {/* Quiz Header */}
+      <h2 className="text-3xl font-extrabold text-purple-300 mb-2">{quiz.title}</h2>
+      <p className="text-gray-400 mb-6">{quiz.description}</p>
+
+      {/* Progress */}
+      <div className="flex items-center justify-between mb-6">
+        <span className="text-sm font-medium text-gray-300">
+          Question {currentIndex + 1} of {quiz.questions.length}
+        </span>
+        <div className="w-1/2 bg-gray-800 h-2 rounded-full overflow-hidden">
+          <div
+            className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all"
+            style={{
+              width: `${((currentIndex + 1) / quiz.questions.length) * 100}%`,
+            }}
+          ></div>
+        </div>
       </div>
 
-      <div className="relative z-10 max-w-5xl mx-auto w-full">
-        <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold text-white mb-4 flex items-center justify-center gap-3">
-            <BookOpenIcon className="h-8 w-8" />
-            Aptitude & Interest Assessment
-          </h1>
-          <p className="text-lg text-white/80 max-w-3xl mx-auto">
-            Discover which academic path aligns with your natural abilities and
-            interests by answering the following questions
-          </p>
-        </div>
+      {/* Question */}
+      <div key={question.id} className="mb-6">
+        <p className="mb-4 text-lg font-medium text-gray-200">{question.text}</p>
 
-        {/* Progress */}
-        {!showResult && (
-          <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg p-6 md:p-8 mb-6">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium text-white/80">
-                Question {currentQuestion + 1} of {questions.length}
-              </span>
-              <span className="text-sm font-medium text-purple-300">
-                {Math.round(((currentQuestion + 1) / questions.length) * 100)}%
-                Complete
-              </span>
-            </div>
-            <div className="w-full bg-white/20 rounded-full h-2.5">
-              <div
-                className="bg-gradient-to-r from-purple-500 to-fuchsia-500 h-2.5 rounded-full"
-                style={{
-                  width: `${((currentQuestion + 1) / questions.length) * 100}%`,
-                }}
-              />
-            </div>
+        {/* Multiple Choice */}
+        {question.type === "multiple-choice" && (
+          <div className="space-y-3">
+            {question.options.map((opt, i) => (
+              <label
+                key={i}
+                className={`block p-4 rounded-xl border cursor-pointer transition-all 
+                  ${
+                    answers[question.id] === opt
+                      ? "bg-purple-900/40 border-purple-500 shadow-lg shadow-purple-500/40"
+                      : "bg-gray-900 hover:bg-gray-800 border-gray-700"
+                  }`}
+              >
+                <input
+                  type="radio"
+                  name={question.id}
+                  value={opt}
+                  checked={answers[question.id] === opt}
+                  onChange={(e) => handleChange(question.id, e.target.value)}
+                  className="hidden"
+                />
+                <span className="text-gray-200">{opt}</span>
+              </label>
+            ))}
           </div>
         )}
 
-        {/* Quiz / Results */}
-        <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg p-6 md:p-8">
-          {!showResult ? (
-            <>
-              <h2 className="text-xl font-semibold text-white mb-6">
-                {questions[currentQuestion].question}
-              </h2>
+        {/* Rating Scale */}
+        {question.type === "rating" && (
+          <div className="flex justify-between mt-4">
+            {likertLabels.map((label, index) => (
+              <label
+                key={index}
+                className={`flex flex-col items-center cursor-pointer p-2 rounded-lg transition 
+                  ${
+                    answers[question.id] === String(index + 1)
+                      ? "bg-purple-900/40 border border-purple-500 shadow"
+                      : "hover:bg-gray-800 border border-gray-700"
+                  }`}
+              >
+                <input
+                  type="radio"
+                  name={question.id}
+                  value={index + 1}
+                  checked={answers[question.id] === String(index + 1)}
+                  onChange={(e) => handleChange(question.id, e.target.value)}
+                  className="hidden"
+                />
+                <span className="text-xs text-gray-300">{label}</span>
+              </label>
+            ))}
+          </div>
+        )}
+      </div>
 
-              <div className="space-y-4">
-                {questions[currentQuestion].options.map((option, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() =>
-                      handleAnswer(questions[currentQuestion].id, idx)
-                    }
-                    className="w-full text-left p-4 border border-white/20 rounded-lg text-white/90 hover:bg-white/10 hover:border-purple-400 transition-colors"
-                  >
-                    {option}
-                  </button>
-                ))}
-              </div>
-            </>
-          ) : (
-            (() => {
-              const recommendation = getRecommendations();
-              const streamIcons = {
-                Science: <BeakerIcon className="h-8 w-8 text-cyan-300" />,
-                Arts: <PaintBrushIcon className="h-8 w-8 text-fuchsia-300" />,
-                Commerce: <BriefcaseIcon className="h-8 w-8 text-emerald-300" />,
+      {/* Navigation Buttons */}
+      <div className="flex space-x-4 mt-6">
+        <button
+          className="px-5 py-2 bg-gray-700 text-gray-200 rounded-lg hover:bg-gray-600 transition-all"
+          onClick={onBack}
+        >
+          Back
+        </button>
+        {currentIndex > 0 && (
+          <button
+            className="px-5 py-2 bg-gray-600 text-gray-200 rounded-lg hover:bg-gray-500 transition-all"
+            onClick={handlePrev}
+          >
+            Previous
+          </button>
+        )}
+        {currentIndex < quiz.questions.length - 1 ? (
+          <button
+            className={`px-5 py-2 rounded-lg transition-all ${
+              answers[question.id]
+                ? "bg-gradient-to-r from-pink-500 to-indigo-600 text-white hover:scale-105"
+                : "bg-gray-500 text-gray-300 cursor-not-allowed"
+            }`}
+            onClick={handleNext}
+            disabled={!answers[question.id]}
+          >
+            Next
+          </button>
+        ) : (
+          <button
+            className={`px-5 py-2 rounded-lg transition-all ${
+              answers[question.id]
+                ? "bg-gradient-to-r from-green-500 to-cyan-600 text-white hover:scale-105"
+                : "bg-gray-500 text-gray-300 cursor-not-allowed"
+            }`}
+            onClick={handleSubmit}
+            disabled={!answers[question.id]}
+          >
+            Submit Quiz
+          </button>
+        )}
+      </div>
+    </motion.div>
+  );
+}
+
+// ====================== APP COMPONENT ======================
+function App() {
+  const [currentQuiz, setCurrentQuiz] = useState(null);
+  const [results, setResults] = useState([]);
+  const totalQuizzes = quizzes.length;
+  const completedQuizzes = results.length;
+  const progressPercent = (completedQuizzes / totalQuizzes) * 100;
+
+  const handleStartQuiz = (quizId) => {
+    const selectedQuiz = quizzes.find((q) => q.id === quizId);
+    setCurrentQuiz(selectedQuiz);
+  };
+
+  const handleCompleteQuiz = (result) => {
+    setResults((prev) => {
+      const withoutCurrent = prev.filter((r) => r.quizId !== result.quizId);
+      return [...withoutCurrent, result];
+    });
+    setCurrentQuiz(null);
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-purple-900 py-10 px-6 text-white">
+      {currentQuiz ? (
+        <Quiz
+          quiz={currentQuiz}
+          onComplete={handleCompleteQuiz}
+          onBack={() => setCurrentQuiz(null)}
+        />
+      ) : (
+        <div className="max-w-4xl mx-auto text-center">
+          {/* Header */}
+          <h1 className="text-5xl font-extrabold text-purple-300 drop-shadow mb-4">
+            Career Guidance Assessment
+          </h1>
+          <p className="text-lg text-gray-400 mb-10">
+            Choose a section below to start your quiz.
+          </p>
+
+          {/* Progress Bar */}
+          <div className="mb-8 max-w-xl mx-auto">
+            <div className="flex justify-between mb-2 text-gray-300 font-semibold">
+              <span>Quiz Progress</span>
+              <span>{Math.round(progressPercent)}%</span>
+            </div>
+            <div className="w-full bg-gray-800 h-4 rounded-full shadow-inner">
+              <div
+                className="bg-gradient-to-r from-blue-500 to-purple-600 h-4 rounded-full transition-all duration-700"
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Quiz Selection Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {quizzes.map((quiz) => {
+              const completed = results.find((r) => r.quizId === quiz.id);
+              // Card colors and icons
+              const cardColors = {
+                aptitude: "from-blue-600 to-indigo-600",
+                logical: "from-purple-600 to-pink-600",
+                cognitive: "from-green-600 to-emerald-600",
+                personality: "from-orange-500 to-yellow-500",
               };
+              const cardIcons = {
+                aptitude: <Calculator className="w-8 h-8 text-white" />,
+                logical: <Brain className="w-8 h-8 text-white" />,
+                cognitive: <Lightbulb className="w-8 h-8 text-white" />,
+                personality: <Users className="w-8 h-8 text-white" />,
+              };
+
               return (
-                <div className="space-y-6 text-white">
-                  <div className="p-6 bg-gradient-to-br from-purple-600/30 to-indigo-700/30 border border-white/10 rounded-lg text-center">
-                    <h3 className="text-xl font-semibold text-white/90 mb-2">
-                      Recommended Stream
-                    </h3>
-                    <div className="flex items-center justify-center gap-3">
-                      {streamIcons[recommendation.stream]}
-                      <p className="text-2xl font-bold text-white">
-                        {recommendation.stream}
-                      </p>
-                    </div>
+                <motion.div
+                  key={quiz.id}
+                  initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  whileHover={{ scale: 1.03, y: -5 }}
+                  transition={{ duration: 0.5, type: "spring" }}
+                  className="rounded-xl shadow-lg overflow-hidden bg-black border border-gray-700 flex flex-col hover:border-purple-400/50 hover:shadow-xl hover:shadow-purple-500/20 transition-all duration-300"
+                >
+                  <div className={`p-6 flex justify-center items-center bg-gradient-to-r ${cardColors[quiz.id]}`}>
+                    {cardIcons[quiz.id]}
                   </div>
-
-                  <div className="mb-6">
-                    <h3 className="text-lg font-semibold text-white/90 mb-4">
-                      Your Interest Profile
-                    </h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                      {Object.entries(recommendation.scores).map(
-                        ([stream, score]) => (
-                          <div
-                            key={stream}
-                            className="bg-white/5 border border-white/10 rounded-lg p-4 text-center"
-                          >
-                            <div className="font-medium text-white/80">
-                              {stream}
-                            </div>
-                            <div className="mt-2 relative pt-1">
-                              <div className="overflow-hidden h-2 text-xs flex rounded bg-white/20">
-                                <div
-                                  style={{ width: `${(score / 5) * 100}%` }}
-                                  className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${
-                                    stream === "Science"
-                                      ? "bg-cyan-400"
-                                      : stream === "Arts"
-                                      ? "bg-fuchsia-400"
-                                      : "bg-emerald-400"
-                                  }`}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        )
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="p-6 bg-white/5 border border-white/10 rounded-lg">
-                      <h3 className="text-lg font-semibold text-white/90 mb-4">
-                        Suggested Courses
-                      </h3>
-                      <ul className="space-y-2">
-                        {recommendation.courses.map((course, index) => (
-                          <li key={index} className="flex items-start">
-                            <CheckCircleIcon className="h-5 w-5 text-purple-400 mr-2 flex-shrink-0 mt-0.5" />
-                            <span className="text-white/80">{course}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    <div className="p-6 bg-white/5 border border-white/10 rounded-lg">
-                      <h3 className="text-lg font-semibold text-white/90 mb-4">
-                        Potential Careers
-                      </h3>
-                      <ul className="space-y-2">
-                        {recommendation.careers.map((career, index) => (
-                          <li key={index} className="flex items-start">
-                            <CheckCircleIcon className="h-5 w-5 text-purple-400 mr-2 flex-shrink-0 mt-0.5" />
-                            <span className="text-white/80">{career}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div className="p-6 bg-yellow-400/10 border border-yellow-400/20 rounded-lg">
-                    <h3 className="text-lg font-semibold text-yellow-200 mb-2 flex items-center gap-2">
-                      <LightBulbIcon className="h-6 w-6" />
-                      Next Steps
-                    </h3>
-                    <p className="text-yellow-200/80 mb-4">
-                      Based on your assessment, we recommend exploring more about
-                      the courses in {recommendation.stream} stream.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-4">
-                      <Link
-                        to="/course-explorer"
-                        className="flex items-center justify-center gap-2 text-center px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-md hover:opacity-90 transition-opacity"
+                  <div className="p-6 flex-1 flex flex-col">
+                    <h3 className="text-lg font-bold text-purple-300 mb-1">{quiz.title}</h3>
+                    <p className="text-gray-400 mb-4">{quiz.description}</p>
+                    {completed && (
+                      <span className="inline-block bg-green-200/20 text-green-400 text-xs font-semibold px-3 py-1 rounded-full self-start mb-4">
+                        ✅ Completed
+                      </span>
+                    )}
+                    <div className="flex justify-between items-center mt-auto">
+                      <div className="flex items-center space-x-1 text-gray-400 text-sm">
+                        ⏱ <span>{quiz.timeLimit} minutes</span>
+                      </div>
+                      <button
+                        onClick={() => handleStartQuiz(quiz.id)}
+                        className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                          completed
+                            ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                            : "bg-gradient-to-r from-pink-500 to-indigo-600 text-white hover:scale-105"
+                        }`}
                       >
-                        <ArrowRightCircleIcon className="h-5 w-5" />
-                        Explore Related Courses
-                      </Link>
-                      <Link
-                        to="/college-directory"
-                        className="flex items-center justify-center gap-2 text-center px-4 py-2 bg-white/10 text-white rounded-md hover:bg-white/20 transition-colors"
-                      >
-                        <ArrowRightCircleIcon className="h-5 w-5" />
-                        Find Colleges Offering These Courses
-                      </Link>
+                        {completed ? "Retake" : "Start Quiz"}
+                      </button>
                     </div>
                   </div>
-
-                  <div className="text-center pt-4">
-                    <button
-                      onClick={resetTest}
-                      className="flex items-center justify-center gap-2 mx-auto px-4 py-2 text-purple-300 font-medium hover:underline"
-                    >
-                      <ArrowPathIcon className="h-5 w-5" />
-                      Retake Assessment
-                    </button>
-                  </div>
-                </div>
+                </motion.div>
               );
-            })()
+            })}
+          </div>
+
+          {/* Results */}
+          {results.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mt-12 bg-black border border-green-400/50 rounded-xl p-6 text-left shadow-lg shadow-green-500/20"
+            >
+              <h2 className="text-2xl font-bold text-green-400 mb-4">Completed Results</h2>
+              <ul className="space-y-2">
+                {results.map((r, i) => (
+                  <li key={i} className="text-green-300 font-medium">
+                    ✅ {r.quizId}
+                  </li>
+                ))}
+              </ul>
+              {progressPercent === 100 && (
+                <Link
+                  to="/Result"
+                  state={{ result: { quizzes: results } }}
+                  className="inline-block mt-6 px-6 py-2 bg-gradient-to-r from-green-500 to-cyan-600 text-white rounded-lg hover:scale-105 transition"
+                >
+                  View Results
+                </Link>
+              )}
+            </motion.div>
           )}
         </div>
-      </div>
+      )}
     </div>
   );
 }
 
-export default AptitudeTest;
+export default App;
