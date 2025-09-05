@@ -90,7 +90,7 @@ function Login({ onLoginSuccess, onSignUpClick }) {
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold">Welcome back</h2>
           <p className="mt-2 text-gray-400">
-            Log in to your CareerPath account
+            Log in to your sAarthI account
           </p>
         </div>
 
