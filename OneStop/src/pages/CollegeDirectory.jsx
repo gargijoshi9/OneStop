@@ -14,6 +14,8 @@ import {
   ArrowDownTrayIcon,
   CheckBadgeIcon,
 } from "@heroicons/react/24/outline";
+import { ChevronUp } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Mock college data with latitudes and longitudes
 const collegeData = [
@@ -1521,6 +1523,7 @@ const collegeData = [
 
 
 function CollegeDirectory() {
+  const [showButton, setShowButton] = useState(false);
   const [colleges, setColleges] = useState([]);
   const [filteredColleges, setFilteredColleges] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -1538,6 +1541,18 @@ function CollegeDirectory() {
   const [userLocation, setUserLocation] = useState(null);
   const [isFindingLocation, setIsFindingLocation] = useState(false);
   const [locationError, setLocationError] = useState("");
+
+    useEffect(() => {
+    const handleScroll = () => {
+      setShowButton(window.scrollY > 300);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   // Haversine formula to calculate distance between two lat/lng points
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
@@ -1958,6 +1973,23 @@ function CollegeDirectory() {
           </div>
         </div>
       </div>
+       <AnimatePresence>
+        {showButton && (
+          <motion.button
+            onClick={scrollToTop}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.3 }}
+            className="fixed bottom-6 left-6 z-50 rounded-full shadow-lg p-[0.4rem]
+           bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600
+           text-white hover:shadow-purple-500/40 hover:scale-110
+           transition-all duration-300 flex items-center justify-center"
+          >
+            <ChevronUp size={40} strokeWidth={2} color="white" />
+          </motion.button>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

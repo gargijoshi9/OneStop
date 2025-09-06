@@ -56,7 +56,7 @@ function Navbar() {
           {/* Logo */}
           <Link to="/" className="flex-shrink-0 flex items-center">
             <span className="text-2xl font-bold bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-              sAarthI
+              UjjwAl
             </span>
           </Link>
 
