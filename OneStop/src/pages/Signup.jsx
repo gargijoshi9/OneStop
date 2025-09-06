@@ -120,10 +120,10 @@ function Signup() {
 
       <div className="relative z-10 max-w-md w-full bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg p-8">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold">
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
             Create an account
           </h2>
-          <p className="mt-2 text-gray-400">
+          <p className="mt-2 text-white">
             Get personalized educational guidance
           </p>
         </div>
@@ -262,7 +262,7 @@ function Signup() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black focus:ring-blue-500 transition-all"
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white  bg-gradient-to-r from-pink-500 to-indigo-600 text-white hover:scale-105 transition-transform duration-200 hover:from-indigo-600 hover:to-pink-600"
             >
               {loading ? "Creating account..." : "Sign up"}
             </button>

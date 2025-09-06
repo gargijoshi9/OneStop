@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Calculator, Brain, Lightbulb, Users } from "lucide-react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion"; // added for animation like Home.jsx
+import { motion, AnimatePresence } from "framer-motion"; // added for animation like Home.jsx
+import { ChevronUp } from 'lucide-react';
 
 // ====================== QUIZ DATA ======================
 const quizzes = [
@@ -394,9 +395,25 @@ function Quiz({ quiz, onComplete, onBack }) {
 function App() {
   const [currentQuiz, setCurrentQuiz] = useState(null);
   const [results, setResults] = useState([]);
+  const [showButton, setShowButton] = useState(false); // <-- back to top state
+
   const totalQuizzes = quizzes.length;
   const completedQuizzes = results.length;
   const progressPercent = (completedQuizzes / totalQuizzes) * 100;
+
+  // Back to top logic
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 200) setShowButton(true);
+      else setShowButton(false);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const handleStartQuiz = (quizId) => {
     const selectedQuiz = quizzes.find((q) => q.id === quizId);
@@ -532,6 +549,25 @@ function App() {
           )}
         </div>
       )}
+
+      {/* Back to Top Button (appears everywhere) */}
+      <AnimatePresence>
+        {showButton && (
+          <motion.button
+            onClick={scrollToTop}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.3 }}
+            className="fixed bottom-6 left-6 z-50 rounded-full shadow-lg p-[0.4rem]
+           bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600
+           text-white hover:shadow-purple-500/40 hover:scale-110
+           transition-all duration-300 flex items-center justify-center"
+          >
+            <ChevronUp size={40} strokeWidth={2} color="white" />
+          </motion.button>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
