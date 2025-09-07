@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Calculator, Brain, Lightbulb, Users } from "lucide-react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion"; // added for animation like Home.jsx
+import { motion, AnimatePresence } from "framer-motion"; // added for animation like Home.jsx
+import { ChevronUp } from "lucide-react";
 
 // ====================== QUIZ DATA ======================
 const quizzes = [
@@ -267,7 +268,9 @@ function Quiz({ quiz, onComplete, onBack }) {
       className="max-w-3xl mx-auto bg-black border border-gray-700 p-8 rounded-2xl shadow-2xl shadow-purple-500/20"
     >
       {/* Quiz Header */}
-      <h2 className="text-3xl font-extrabold text-purple-300 mb-2">{quiz.title}</h2>
+      <h2 className="text-3xl font-extrabold text-purple-300 mb-2">
+        {quiz.title}
+      </h2>
       <p className="text-gray-400 mb-6">{quiz.description}</p>
 
       {/* Progress */}
@@ -287,7 +290,9 @@ function Quiz({ quiz, onComplete, onBack }) {
 
       {/* Question */}
       <div key={question.id} className="mb-6">
-        <p className="mb-4 text-lg font-medium text-gray-200">{question.text}</p>
+        <p className="mb-4 text-lg font-medium text-gray-200">
+          {question.text}
+        </p>
 
         {/* Multiple Choice */}
         {question.type === "multiple-choice" && (
@@ -391,12 +396,29 @@ function Quiz({ quiz, onComplete, onBack }) {
 }
 
 // ====================== APP COMPONENT ======================
+// ====================== APP COMPONENT ======================
 function App() {
   const [currentQuiz, setCurrentQuiz] = useState(null);
   const [results, setResults] = useState([]);
+  const [showButton, setShowButton] = useState(false);
+
   const totalQuizzes = quizzes.length;
   const completedQuizzes = results.length;
   const progressPercent = (completedQuizzes / totalQuizzes) * 100;
+
+  // Back to top logic
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 200) setShowButton(true);
+      else setShowButton(false);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const handleStartQuiz = (quizId) => {
     const selectedQuiz = quizzes.find((q) => q.id === quizId);
@@ -447,6 +469,7 @@ function App() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {quizzes.map((quiz) => {
               const completed = results.find((r) => r.quizId === quiz.id);
+
               // Card colors and icons
               const cardColors = {
                 aptitude: "from-blue-600 to-indigo-600",
@@ -471,17 +494,29 @@ function App() {
                   transition={{ duration: 0.5, type: "spring" }}
                   className="rounded-xl shadow-lg overflow-hidden bg-black border border-gray-700 flex flex-col hover:border-purple-400/50 hover:shadow-xl hover:shadow-purple-500/20 transition-all duration-300"
                 >
-                  <div className={`p-6 flex justify-center items-center bg-gradient-to-r ${cardColors[quiz.id]}`}>
+                  {/* Card Header with Icon */}
+                  <div
+                    className={`p-6 flex justify-center items-center bg-gradient-to-r ${
+                      cardColors[quiz.id]
+                    }`}
+                  >
                     {cardIcons[quiz.id]}
                   </div>
+
+                  {/* Card Body */}
                   <div className="p-6 flex-1 flex flex-col">
-                    <h3 className="text-lg font-bold text-purple-300 mb-1">{quiz.title}</h3>
+                    <h3 className="text-lg font-bold text-purple-300 mb-1">
+                      {quiz.title}
+                    </h3>
                     <p className="text-gray-400 mb-4">{quiz.description}</p>
+
+                    {/* ✅ Completed badge inside each card */}
                     {completed && (
                       <span className="inline-block bg-green-200/20 text-green-400 text-xs font-semibold px-3 py-1 rounded-full self-start mb-4">
-                        ✅ Completed
+                        Completed
                       </span>
                     )}
+
                     <div className="flex justify-between items-center mt-auto">
                       <div className="flex items-center space-x-1 text-gray-400 text-sm">
                         ⏱ <span>{quiz.timeLimit} minutes</span>
@@ -503,35 +538,44 @@ function App() {
             })}
           </div>
 
-          {/* Results */}
-          {results.length > 0 && (
+          {/* ✅ Removed Completed Results section here */}
+          {progressPercent === 100 && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="mt-12 bg-black border border-green-400/50 rounded-xl p-6 text-left shadow-lg shadow-green-500/20"
+              className="mt-12"
             >
-              <h2 className="text-2xl font-bold text-green-400 mb-4">Completed Results</h2>
-              <ul className="space-y-2">
-                {results.map((r, i) => (
-                  <li key={i} className="text-green-300 font-medium">
-                    ✅ {r.quizId}
-                  </li>
-                ))}
-              </ul>
-              {progressPercent === 100 && (
-                <Link
-                  to="/Result"
-                  state={{ result: { quizzes: results } }}
-                  className="inline-block mt-6 px-6 py-2 bg-gradient-to-r from-green-500 to-cyan-600 text-white rounded-lg hover:scale-105 transition"
-                >
-                  View Results
-                </Link>
-              )}
+              <Link
+                to="/Result"
+                state={{ result: { quizzes: results } }}
+                className="inline-block px-6 py-3 bg-gradient-to-r from-green-500 to-cyan-600 text-white rounded-lg hover:scale-105 transition"
+              >
+                View Results
+              </Link>
             </motion.div>
           )}
         </div>
       )}
+
+      {/* Back to Top Button */}
+      <AnimatePresence>
+        {showButton && (
+          <motion.button
+            onClick={scrollToTop}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.3 }}
+            className="fixed bottom-6 left-6 z-50 rounded-full shadow-lg p-[0.4rem]
+             bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600
+             text-white hover:shadow-purple-500/40 hover:scale-110
+             transition-all duration-300 flex items-center justify-center"
+          >
+            <ChevronUp size={40} strokeWidth={2} color="white" />
+          </motion.button>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

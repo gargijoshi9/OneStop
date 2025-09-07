@@ -1,125 +1,190 @@
-import React from "react";
+import React, { useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
-function Result() {
-  const location = useLocation();
-  const { result } = location.state || {};
-  const quizzes = result?.quizzes || [];
+// ====== Course Data (Inline JSON) ======
+const coursesData = [
+  {
+    id: 1,
+    stream: "Science",
+    name: "Bachelor of Science (B.Sc.)",
+    duration: "3 Years",
+    description:
+      "A foundational undergraduate program focusing on scientific and technical subjects across physics, chemistry, mathematics, biology, and computer science.",
+    careers: [
+      "Research Scientist",
+      "Lab Technician",
+      "Professor",
+      "Data Analyst",
+    ],
+    higherStudies: ["M.Sc.", "Ph.D.", "MBA"],
+    governmentExams: ["UPSC", "SSC", "Bank PO", "State PSC"],
+  },
+  {
+    id: 2,
+    stream: "Commerce",
+    name: "Bachelor of Commerce (B.Com.)",
+    duration: "3 Years",
+    description:
+      "A program offering knowledge in accounting, finance, taxation, and economics, preparing students for careers in corporate and financial sectors.",
+    careers: [
+      "Accountant",
+      "Financial Analyst",
+      "Auditor",
+      "Investment Banker",
+    ],
+    higherStudies: ["M.Com.", "CA", "MBA"],
+    governmentExams: ["UPSC", "SSC CGL", "Bank Exams"],
+  },
+  {
+    id: 3,
+    stream: "Arts",
+    name: "Bachelor of Arts (B.A.)",
+    duration: "3 Years",
+    description:
+      "An undergraduate program in humanities and social sciences with subjects like literature, history, sociology, psychology, and political science.",
+    careers: ["Teacher", "Civil Services", "Journalist", "Content Writer"],
+    higherStudies: ["M.A.", "M.Phil.", "Ph.D.", "MBA"],
+    governmentExams: ["UPSC", "State PSC", "SSC"],
+  },
+];
 
-  if (!result) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-purple-900 flex flex-col items-center justify-center text-center px-6">
-        <p className="text-gray-400 text-lg mb-4">
-          No results available. Please take the test first.
-        </p>
-        <Link
-          to="/"
-          className="px-6 py-3 rounded-full bg-gradient-to-r from-pink-500 to-indigo-600 text-white font-medium hover:scale-105 transition-transform"
-        >
-          Go Back
-        </Link>
-      </div>
-    );
-  }
+// ====== Recommendation Logic ======
+const getRecommendations = (results) => {
+  let aptitude = results.find((r) => r.quizId === "aptitude")?.percentage || 0;
+  let logical = results.find((r) => r.quizId === "logical")?.percentage || 0;
+  let cognitive =
+    results.find((r) => r.quizId === "cognitive")?.percentage || 0;
+  let personality =
+    results.find((r) => r.quizId === "personality")?.percentage || 0;
+
+  const best = Math.max(aptitude, logical, cognitive, personality);
+
+  if (aptitude === best) return { field: "Engineering", stream: "Science" };
+  if (logical === best)
+    return { field: "Commerce / Management", stream: "Commerce" };
+  if (cognitive === best)
+    return { field: "Science & Research", stream: "Science" };
+  if (personality === best)
+    return { field: "Arts & Social Sciences", stream: "Arts" };
+
+  return { field: "General Studies", stream: "Arts" };
+};
+
+export default function Result() {
+  const location = useLocation();
+  const results = location.state?.result?.quizzes || [];
+  const recommendation = getRecommendations(results);
+
+  const [expanded, setExpanded] = useState(null);
+
+  const suggestedCourses = coursesData.filter(
+    (course) => course.stream === recommendation.stream
+  );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-purple-900 py-12 px-6 text-white">
-      <div className="max-w-4xl mx-auto">
-        {/* Recommended Stream */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="p-6 bg-black border border-purple-500/40 rounded-2xl mb-8 shadow-lg shadow-purple-500/20"
-        >
-          <h3 className="text-xl font-bold text-purple-300 mb-2">
-            Recommended Stream
-          </h3>
-          <p className="text-3xl font-extrabold text-cyan-300">
-            {result.stream}
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-black to-purple-900 py-10 px-6 text-white">
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="w-full max-w-4xl bg-black border border-gray-700 p-8 rounded-2xl shadow-2xl shadow-green-500/20"
+      >
+        <h1 className="text-4xl font-extrabold text-green-400 mb-8 text-center">
+          Your Career Guidance Results
+        </h1>
+
+        <div className="bg-gradient-to-r from-purple-900/40 to-indigo-900/40 border border-purple-600 rounded-2xl p-8 shadow-xl">
+          <h2 className="text-2xl font-bold text-yellow-400 mb-6 text-center">
+            Recommended Career Path
+          </h2>
+          <p className="text-gray-300 mb-8 text-lg text-center">
+            Based on your responses, we recommend exploring{" "}
+            <span className="text-green-400 font-semibold">
+              {recommendation.field}
+            </span>
+            .
           </p>
-        </motion.div>
 
-        {/* Quiz Scores */}
-        <motion.div
-          initial={{ opacity: 0, x: -40 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="mb-8"
-        >
-          <h3 className="text-lg font-semibold text-purple-300 mb-4">
-            Your Quiz Scores
-          </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {quizzes.map((q) => (
-              <motion.div
-                key={q.quizId}
-                whileHover={{ scale: 1.05 }}
-                className="bg-black border border-gray-700 rounded-xl p-6 text-center shadow-md hover:border-purple-400 hover:shadow-purple-500/30 transition-all"
-              >
-                <div className="font-medium text-gray-300">{q.quizId}</div>
-                <div className="mt-2 text-2xl font-bold text-indigo-400">
-                  {q.percentage}%
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Suggested Courses & Careers */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="p-6 bg-black border border-gray-700 rounded-xl shadow-md hover:border-cyan-400/50 hover:shadow-cyan-500/20 transition-all"
-          >
-            <h3 className="text-lg font-semibold text-cyan-300 mb-4">
+          {/* Suggested Courses */}
+          <div>
+            <h3 className="text-xl font-semibold text-purple-300 mb-6 text-center">
               Suggested Courses
             </h3>
-            <ul className="space-y-2">
-              {result.courses?.map((course, index) => (
-                <li key={index} className="flex items-start text-gray-300">
-                  <span className="text-cyan-400 mr-2">•</span>
-                  <span>{course}</span>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
+            {suggestedCourses.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {suggestedCourses.map((course) => (
+                  <div
+                    key={course.id}
+                    className="bg-black border border-gray-700 rounded-xl p-6 shadow-lg hover:border-cyan-400 hover:shadow-cyan-500/40 transition-all"
+                  >
+                    <h4 className="text-lg font-bold text-cyan-300 mb-2">
+                      {course.name}
+                    </h4>
+                    <p className="text-gray-400 mb-3">
+                      ⏳ Duration: {course.duration}
+                    </p>
+                    <p className="text-gray-300 mb-3">{course.description}</p>
 
-          <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="p-6 bg-black border border-gray-700 rounded-xl shadow-md hover:border-pink-400/50 hover:shadow-pink-500/20 transition-all"
-          >
-            <h3 className="text-lg font-semibold text-pink-300 mb-4">
-              Potential Careers
-            </h3>
-            <ul className="space-y-2">
-              {result.careers?.map((career, index) => (
-                <li key={index} className="flex items-start text-gray-300">
-                  <span className="text-pink-400 mr-2">•</span>
-                  <span>{career}</span>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
+                    {expanded === course.id ? (
+                      <div className="space-y-2 text-sm text-gray-300">
+                        <div>
+                          <h5 className="font-semibold text-pink-300">
+                            Careers:
+                          </h5>
+                          <ul className="list-disc ml-4">
+                            {course.careers.map((career, i) => (
+                              <li key={i}>{career}</li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div>
+                          <h5 className="font-semibold text-pink-300">
+                            Higher Studies:
+                          </h5>
+                          <p>{course.higherStudies.join(", ")}</p>
+                        </div>
+                        <div>
+                          <h5 className="font-semibold text-pink-300">
+                            Government Exams:
+                          </h5>
+                          <p>{course.governmentExams.join(", ")}</p>
+                        </div>
+                        <button
+                          className="mt-2 px-3 py-1 border border-cyan-500 rounded text-cyan-400 hover:bg-cyan-900/30"
+                          onClick={() => setExpanded(null)}
+                        >
+                          Show Less
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        className="text-cyan-400 mt-2 hover:underline"
+                        onClick={() => setExpanded(course.id)}
+                      >
+                        Read More →
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-400 mt-2 text-center">
+                No matching courses found.
+              </p>
+            )}
+          </div>
         </div>
 
-        {/* Retake */}
-        <div className="text-center pt-6">
+        <div className="text-center mt-10">
           <Link
-            to="/aptitude-test"
-            className="inline-block px-6 py-3 rounded-full bg-gradient-to-r from-purple-600 via-pink-500 to-blue-600 text-white font-semibold shadow-md hover:scale-105 transition-transform"
+            to="/course-explorer"
+            className="px-8 py-3 bg-gradient-to-r from-green-500 to-blue-600 text-white text-lg rounded-full font-bold shadow-lg hover:scale-105 transition-transform"
           >
-            Retake Assessment
+            🎓 Discover Colleges
           </Link>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
-
-export default Result;

@@ -96,7 +96,7 @@ function Login({ onLoginSuccess, onSignUpClick }) {
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-white">Welcome back</h2>
           <p className="mt-2 text-white/80">
-            Log in to your sAarthI account
+            Log in to your UjjwAl account
           </p>
         </div>
 
