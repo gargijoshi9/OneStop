@@ -97,8 +97,9 @@ function Timeline() {
   };
 
   return (
-    <div className="relative min-h-screen w-full bg-gradient-to-br from-black via-gray-950 to-[#180316]">
-      {/* Animated glassy gradient blobs */}
+<div className="relative min-h-screen w-full bg-gradient-to-br from-black via-gray-950 to-[#180316]">
+  <div className="relative z-10 max-w-6xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+   {/* Animated glassy gradient blobs */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <motion.div
           className="absolute -top-40 -right-40 w-[38rem] h-[38rem] bg-gradient-to-br from-violet-700 to-blue-400 rounded-full opacity-25 blur-3xl"
@@ -129,8 +130,10 @@ function Timeline() {
           }}
         />
       </div>
+      </div>
 
-      <div className="relative z-10 max-w-6xl mx-auto py-10 px-4">
+      <div className="relative z-10 max-w-6xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+
         <div className="text-center mb-12">
           <h1 className="flex items-center justify-center gap-3 text-5xl font-bold mb-4 text-white drop-shadow-xl">
             <CalendarDaysIcon className="h-10 w-10 text-blue-400" />
