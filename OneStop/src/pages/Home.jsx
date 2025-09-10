@@ -12,8 +12,6 @@ import {
   UserPlusIcon,
 } from "@heroicons/react/24/solid";
 
-import { ChevronUp } from 'lucide-react';
-
 const features = [
   {
     title: "Aptitude & Interest Tests",
@@ -63,19 +61,6 @@ const cardVariants = {
 
 function Home() {
   const { user } = useAuth();
-const [showButton, setShowButton] = React.useState(false);
-
-React.useEffect(() => {
-  const handleScroll = () => {
-    setShowButton(window.scrollY > 300);
-  };
-  window.addEventListener("scroll", handleScroll);
-  return () => window.removeEventListener("scroll", handleScroll);
-}, []);
-
-const scrollToTop = () => {
-  window.scrollTo({ top: 0, behavior: "smooth" });
-};
 
   return (
     <div className="bg-black text-white transition-colors duration-500">
@@ -251,23 +236,6 @@ const scrollToTop = () => {
           </Link>
         </div>
       </section>
-
-{showButton && (
-  <motion.button
-    onClick={scrollToTop}
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    exit={{ opacity: 0, y: 20 }}
-    transition={{ duration: 0.3 }}
-className="fixed bottom-6 left-6 z-50 rounded-full shadow-lg p-[0.4rem]
-           bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600
-           text-white hover:shadow-purple-500/40 hover:scale-110
-           transition-all duration-300 flex items-center justify-center"
-
-  >
-    <ChevronUp size={40} strokeWidth={2} color="white" />
-  </motion.button>
-)}
     </div>
   );
 }

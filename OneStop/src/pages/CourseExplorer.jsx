@@ -1,6 +1,5 @@
 import { useState , useEffect} from 'react';
 import { Link } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
 import {
   MagnifyingGlassIcon,
   BookOpenIcon,
@@ -14,24 +13,11 @@ import {
   ArrowTrendingUpIcon,
   DocumentCheckIcon,
 } from "@heroicons/react/24/outline";
-import { ChevronUp } from "lucide-react";
 
 function CourseExplorer() {
   const [activeStream, setActiveStream] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [showButton, setShowButton] = useState(false);
-
-   useEffect(() => {
-    const handleScroll = () => {
-      setShowButton(window.scrollY > 300);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
 
   const streams = [
     { id: 'all', name: 'All Streams', icon: <MagnifyingGlassIcon className="h-5 w-5 mr-2" /> },
@@ -216,23 +202,6 @@ const filteredCourses = (courses || [])
           </div>
         )}
       </div>
-      <AnimatePresence>
-        {showButton && (
-          <motion.button
-            onClick={scrollToTop}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            transition={{ duration: 0.3 }}
-            className="fixed bottom-6 left-6 z-50 rounded-full shadow-lg p-[0.4rem]
-           bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600
-           text-white hover:shadow-purple-500/40 hover:scale-110
-           transition-all duration-300 flex items-center justify-center"
-          >
-            <ChevronUp size={40} strokeWidth={2} color="white" />
-          </motion.button>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
