@@ -10,12 +10,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Load key from .env
+// Load keys from .env
 const API_KEY = process.env.REACT_APP_GEMINI_API_KEY;
 
-//Basic Validation
+// Basic Validation
 if (!process.env.MONGO_DB_URI) {
-  console.error("❌ Missing MONGO_URI in .env");
+  console.error("❌ Missing MONGO_DB_URI in .env");
   process.exit(1);
 }
 
@@ -34,32 +34,33 @@ let db, Courses;
   try {
     await client.connect();
     console.log("✅ Connected to MongoDB");
+
+    // Select database + collection from .env
     db = client.db(process.env.MONGO_DB_COLLECTION);
     Courses = db.collection(process.env.COURSES);
 
-    // define routes that need Courses *inside* this block
+    // Route: get all courses
     app.get("/course-explorer", async (_req, res) => {
       try {
         const docs = await Courses.find({}).toArray();
         res.json(docs);
       } catch (err) {
-        console.error(err);
+        console.error("❌ Error fetching courses:", err);
         res.status(500).json({ error: err.message });
       }
     });
 
-    // Start the server *only once* after the DB is ready
+    // Start the server *only after DB is ready*
     app.listen(3001, () => {
       console.log("✅ Backend running on http://localhost:3001");
     });
-
   } catch (err) {
     console.error("❌ Mongo connect error:", err);
     process.exit(1);
   }
 })();
 
-// Endpoint to handle content generation requests
+// Endpoint: AI content generation
 app.post("/generate-content", async (req, res) => {
   try {
     const { message } = req.body;
@@ -83,11 +84,7 @@ app.post("/generate-content", async (req, res) => {
         "No reply received",
     });
   } catch (error) {
-    console.error("Backend error:", error.response?.data || error.message);
+    console.error("❌ Backend error:", error.response?.data || error.message);
     res.status(500).json({ error: "Failed to generate content" });
   }
-});
-
-app.listen(3001, () => {
-  console.log("✅ Backend running on http://localhost:3001");
 });

@@ -1,5 +1,5 @@
-import { useState , useEffect} from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import {
   MagnifyingGlassIcon,
   BookOpenIcon,
@@ -15,19 +15,39 @@ import {
 } from "@heroicons/react/24/outline";
 
 function CourseExplorer() {
-  const [activeStream, setActiveStream] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [activeStream, setActiveStream] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const [showButton, setShowButton] = useState(false);
 
   const streams = [
-    { id: 'all', name: 'All Streams', icon: <MagnifyingGlassIcon className="h-5 w-5 mr-2" /> },
-    { id: 'arts', name: 'Arts & Humanities', icon: <BookOpenIcon className="h-5 w-5 mr-2" /> },
-    { id: 'science', name: 'Science', icon: <AcademicCapIcon className="h-5 w-5 mr-2" /> },
-    { id: 'commerce', name: 'Commerce & Management', icon: <BriefcaseIcon className="h-5 w-5 mr-2" /> },
-    { id: 'vocational', name: 'Vocational & Skill-based', icon: <WrenchScrewdriverIcon className="h-5 w-5 mr-2" /> }
+    {
+      id: "all",
+      name: "All Streams",
+      icon: <MagnifyingGlassIcon className="h-5 w-5 mr-2" />,
+    },
+    {
+      id: "arts",
+      name: "Arts & Humanities",
+      icon: <BookOpenIcon className="h-5 w-5 mr-2" />,
+    },
+    {
+      id: "science",
+      name: "Science",
+      icon: <AcademicCapIcon className="h-5 w-5 mr-2" />,
+    },
+    {
+      id: "commerce",
+      name: "Commerce & Management",
+      icon: <BriefcaseIcon className="h-5 w-5 mr-2" />,
+    },
+    {
+      id: "vocational",
+      name: "Vocational & Skill-based",
+      icon: <WrenchScrewdriverIcon className="h-5 w-5 mr-2" />,
+    },
   ];
 
-  const [courses, setCourses] = useState([]);   // <-- replaces the old const courses = [...]
+  const [courses, setCourses] = useState([]); // <-- replaces the old const courses = [...]
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -37,25 +57,34 @@ function CourseExplorer() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-useEffect(() => {
+  useEffect(() => {
     const controller = new AbortController();
     setLoading(true);
-    fetch(`/course-explorer`, { signal: controller.signal })
-      .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
-      .then(data => setCourses(Array.isArray(data) ? data : []))
-      .catch(e => setError(e.message))
+    fetch(`${import.meta.env.VITE_API_URL}/course-explorer`, {
+      signal: controller.signal,
+    })
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
+      .then((data) => setCourses(Array.isArray(data) ? data : []))
+      .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
     return () => controller.abort();
   }, []);
 
-const filteredCourses = (courses || [])
-  .filter(c => activeStream === "all" || (c.stream || "").toLowerCase() === activeStream.toLowerCase())
-  .filter(c => {
-    const name = (c.name || "").toLowerCase();
-    const desc = (c.description || "").toLowerCase();
-    const q = searchQuery.toLowerCase();
-    return name.includes(q) || desc.includes(q);
-  });
+  const filteredCourses = (courses || [])
+    .filter(
+      (c) =>
+        activeStream === "all" ||
+        (c.stream || "").toLowerCase() === activeStream.toLowerCase()
+    )
+    .filter((c) => {
+      const name = (c.name || "").toLowerCase();
+      const desc = (c.description || "").toLowerCase();
+      const q = searchQuery.toLowerCase();
+      return name.includes(q) || desc.includes(q);
+    });
 
   return (
     <div className="min-h-screen bg-black text-white px-4 sm:px-6 lg:px-8 py-12 relative overflow-hidden">
@@ -72,7 +101,8 @@ const filteredCourses = (courses || [])
             Course Explorer
           </h1>
           <p className="text-gray-400 max-w-xl mx-auto">
-            Discover various educational paths and understand where they can lead in terms of career opportunities
+            Discover various educational paths and understand where they can
+            lead in terms of career opportunities
           </p>
         </div>
 
@@ -86,18 +116,18 @@ const filteredCourses = (courses || [])
                 placeholder="Search courses..."
                 className="w-full bg-white/10 text-white border border-white/20 rounded-md pl-10 pr-4 py-2 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400"
                 value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
             <div className="flex flex-wrap gap-2">
-              {streams.map(stream => (
+              {streams.map((stream) => (
                 <button
                   key={stream.id}
                   onClick={() => setActiveStream(stream.id)}
                   className={`flex items-center px-4 py-2 rounded-full font-semibold transition-all duration-300 ${
                     activeStream === stream.id
-                      ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/20'
-                      : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                      ? "bg-purple-600 text-white shadow-lg shadow-purple-500/20"
+                      : "bg-white/10 text-gray-300 hover:bg-white/20"
                   }`}
                 >
                   {stream.icon}
@@ -110,31 +140,45 @@ const filteredCourses = (courses || [])
 
         {/* Courses Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredCourses.map(course => (
+          {filteredCourses.map((course) => (
             <div
               key={course.id}
               className="backdrop-blur-lg bg-white/5 border border-white/10 rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:bg-white/10 hover:scale-[1.02] hover:shadow-purple-500/20"
             >
-              <div className={`h-2 ${
-                course.stream === 'arts' ? 'bg-purple-600' :
-                course.stream === 'science' ? 'bg-blue-600' :
-                course.stream === 'commerce' ? 'bg-green-600' :
-                'bg-pink-600'
-              }`}></div>
+              <div
+                className={`h-2 ${
+                  course.stream === "arts"
+                    ? "bg-purple-600"
+                    : course.stream === "science"
+                    ? "bg-blue-600"
+                    : course.stream === "commerce"
+                    ? "bg-green-600"
+                    : "bg-pink-600"
+                }`}
+              ></div>
               <div className="p-6">
                 <div className="flex justify-between items-start mb-4">
-                  <h2 className="text-xl font-semibold text-white">{course.name}</h2>
-                  <span className={`flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
-                    course.stream === 'arts' ? 'bg-purple-500/20 text-purple-300' :
-                    course.stream === 'science' ? 'bg-blue-500/20 text-blue-300' :
-                    course.stream === 'commerce' ? 'bg-green-500/20 text-green-300' :
-                    'bg-pink-500/20 text-pink-300'
-                  }`}>
+                  <h2 className="text-xl font-semibold text-white">
+                    {course.name}
+                  </h2>
+                  <span
+                    className={`flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                      course.stream === "arts"
+                        ? "bg-purple-500/20 text-purple-300"
+                        : course.stream === "science"
+                        ? "bg-blue-500/20 text-blue-300"
+                        : course.stream === "commerce"
+                        ? "bg-green-500/20 text-green-300"
+                        : "bg-pink-500/20 text-pink-300"
+                    }`}
+                  >
                     <TagIcon className="h-3 w-3 mr-1" />
-                    {streams.find(s => s.id === course.stream)?.name}
+                    {streams.find((s) => s.id === course.stream)?.name}
                   </span>
                 </div>
-                <p className="text-gray-400 mb-2 text-sm">{course.description}</p>
+                <p className="text-gray-400 mb-2 text-sm">
+                  {course.description}
+                </p>
                 <p className="text-gray-400 mb-4 flex items-center">
                   <ClockIcon className="h-4 w-4 mr-2" />
                   <strong>Duration:</strong> {course.duration}
@@ -149,7 +193,9 @@ const filteredCourses = (courses || [])
                       <ChevronRightIcon className="h-5 w-5 transform group-open:rotate-90 transition-transform" />
                     </summary>
                     <ul className="list-disc list-inside text-gray-400 mt-2 text-sm pl-4">
-                      {(course.careers || []).map((career, i) => <li key={i}>{career}</li>)}
+                      {(course.careers || []).map((career, i) => (
+                        <li key={i}>{career}</li>
+                      ))}
                     </ul>
                   </details>
                   <details className="backdrop-blur-sm bg-white/5 p-3 rounded-lg cursor-pointer group">
@@ -161,7 +207,9 @@ const filteredCourses = (courses || [])
                       <ChevronRightIcon className="h-5 w-5 transform group-open:rotate-90 transition-transform" />
                     </summary>
                     <ul className="list-disc list-inside text-gray-400 mt-2 text-sm pl-4">
-                      {(course.higherStudies || []).map((study, i) => <li key={i}>{study}</li>)}
+                      {(course.higherStudies || []).map((study, i) => (
+                        <li key={i}>{study}</li>
+                      ))}
                     </ul>
                   </details>
                   <details className="backdrop-blur-sm bg-white/5 p-3 rounded-lg cursor-pointer group">
@@ -173,12 +221,16 @@ const filteredCourses = (courses || [])
                       <ChevronRightIcon className="h-5 w-5 transform group-open:rotate-90 transition-transform" />
                     </summary>
                     <ul className="list-disc list-inside text-gray-400 mt-2 text-sm pl-4">
-                      {(course.governmentExams || []).map((exam, i) => <li key={i}>{exam}</li>)}
+                      {(course.governmentExams || []).map((exam, i) => (
+                        <li key={i}>{exam}</li>
+                      ))}
                     </ul>
-
                   </details>
                 </div>
-                <Link to="/college-directory" className="text-blue-400 hover:underline mt-6 font-semibold flex items-center gap-1">
+                <Link
+                  to="/college-directory"
+                  className="text-blue-400 hover:underline mt-6 font-semibold flex items-center gap-1"
+                >
                   Find Colleges <ArrowUpRightIcon className="h-4 w-4" />
                 </Link>
               </div>
@@ -192,8 +244,8 @@ const filteredCourses = (courses || [])
             <p className="text-lg">No courses match your search criteria.</p>
             <button
               onClick={() => {
-                setSearchQuery('');
-                setActiveStream('all');
+                setSearchQuery("");
+                setActiveStream("all");
               }}
               className="mt-4 px-6 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
             >
