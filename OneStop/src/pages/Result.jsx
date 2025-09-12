@@ -88,19 +88,21 @@ export default function Result() {
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="w-full max-w-4xl bg-black border border-gray-700 p-8 rounded-2xl shadow-2xl shadow-green-500/20"
+        className="w-full max-w-4xl bg-black border border-gray-700 p-8 rounded-2xl shadow-2xl shadow-purple-500/30"
       >
-        <h1 className="text-4xl font-extrabold text-green-400 mb-8 text-center">
+        {/* Title */}
+        <h1 className="text-4xl font-extrabold text-center bg-gradient-to-r from-fuchsia-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent drop-shadow-lg mb-8">
           Your Career Guidance Results
         </h1>
 
+        {/* Recommendation Section */}
         <div className="bg-gradient-to-r from-purple-900/40 to-indigo-900/40 border border-purple-600 rounded-2xl p-8 shadow-xl">
-          <h2 className="text-2xl font-bold text-yellow-400 mb-6 text-center">
+          <h2 className="text-2xl font-bold text-center text-pink-400 mb-6">
             Recommended Career Path
           </h2>
           <p className="text-gray-300 mb-8 text-lg text-center">
             Based on your responses, we recommend exploring{" "}
-            <span className="text-green-400 font-semibold">
+            <span className="text-purple-300 font-semibold">
               {recommendation.field}
             </span>
             .
@@ -108,7 +110,7 @@ export default function Result() {
 
           {/* Suggested Courses */}
           <div>
-            <h3 className="text-xl font-semibold text-purple-300 mb-6 text-center">
+            <h3 className="text-xl font-semibold text-indigo-300 mb-6 text-center">
               Suggested Courses
             </h3>
             {suggestedCourses.length > 0 ? (
@@ -116,9 +118,9 @@ export default function Result() {
                 {suggestedCourses.map((course) => (
                   <div
                     key={course.id}
-                    className="bg-black border border-gray-700 rounded-xl p-6 shadow-lg hover:border-cyan-400 hover:shadow-cyan-500/40 transition-all"
+                    className="bg-black border border-gray-700 rounded-xl p-6 shadow-lg hover:border-pink-400 hover:shadow-pink-500/40 transition-all"
                   >
-                    <h4 className="text-lg font-bold text-cyan-300 mb-2">
+                    <h4 className="text-lg font-bold text-purple-300 mb-2">
                       {course.name}
                     </h4>
                     <p className="text-gray-400 mb-3">
@@ -129,7 +131,7 @@ export default function Result() {
                     {expanded === course.id ? (
                       <div className="space-y-2 text-sm text-gray-300">
                         <div>
-                          <h5 className="font-semibold text-pink-300">
+                          <h5 className="font-semibold text-fuchsia-400">
                             Careers:
                           </h5>
                           <ul className="list-disc ml-4">
@@ -139,19 +141,19 @@ export default function Result() {
                           </ul>
                         </div>
                         <div>
-                          <h5 className="font-semibold text-pink-300">
+                          <h5 className="font-semibold text-fuchsia-400">
                             Higher Studies:
                           </h5>
                           <p>{course.higherStudies.join(", ")}</p>
                         </div>
                         <div>
-                          <h5 className="font-semibold text-pink-300">
+                          <h5 className="font-semibold text-fuchsia-400">
                             Government Exams:
                           </h5>
                           <p>{course.governmentExams.join(", ")}</p>
                         </div>
                         <button
-                          className="mt-2 px-3 py-1 border border-cyan-500 rounded text-cyan-400 hover:bg-cyan-900/30"
+                          className="mt-2 px-3 py-1 border border-purple-500 rounded text-purple-300 hover:bg-purple-900/30"
                           onClick={() => setExpanded(null)}
                         >
                           Show Less
@@ -159,7 +161,7 @@ export default function Result() {
                       </div>
                     ) : (
                       <button
-                        className="text-cyan-400 mt-2 hover:underline"
+                        className="text-purple-300 mt-2 hover:underline"
                         onClick={() => setExpanded(course.id)}
                       >
                         Read More →
@@ -176,12 +178,19 @@ export default function Result() {
           </div>
         </div>
 
-        <div className="text-center mt-10">
+        {/* Action Buttons */}
+        <div className="flex justify-center gap-6 mt-10">
+          <Link
+            to="/college-directory"
+            className="px-8 py-3 bg-gradient-to-r from-fuchsia-500 via-purple-600 to-indigo-600 text-white text-lg rounded-full font-bold shadow-lg hover:scale-105 hover:shadow-fuchsia-500/40 transition-transform"
+          >
+           Discover Colleges
+          </Link>
           <Link
             to="/course-explorer"
-            className="px-8 py-3 bg-gradient-to-r from-green-500 to-blue-600 text-white text-lg rounded-full font-bold shadow-lg hover:scale-105 transition-transform"
+            className="px-8 py-3 bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600 text-white text-lg rounded-full font-bold shadow-lg hover:scale-105 hover:shadow-pink-500/40 transition-transform"
           >
-            🎓 Discover Colleges
+           Explore More Courses
           </Link>
         </div>
       </motion.div>

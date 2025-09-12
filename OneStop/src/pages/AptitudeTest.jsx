@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Calculator, Brain, Lightbulb, Users } from "lucide-react";
 import { Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion"; // added for animation like Home.jsx
-import { ChevronUp } from "lucide-react";
+import { motion } from "framer-motion"; // added for animation like Home.jsx
+// import { useQuiz } from "../App";
+import { ArrowLeft } from "lucide-react";
 
 // ====================== QUIZ DATA ======================
 const quizzes = [
@@ -267,6 +268,15 @@ function Quiz({ quiz, onComplete, onBack }) {
       transition={{ duration: 0.6 }}
       className="max-w-3xl mx-auto bg-black border border-gray-700 p-8 rounded-2xl shadow-2xl shadow-purple-500/20"
     >
+      {/* ✅ Back Button inside Quiz */}
+      <button
+        onClick={onBack}
+        className="flex items-center mb-6 text-gray-300 hover:text-white transition"
+      >
+        <ArrowLeft className="w-5 h-5 mr-2" />
+        Back to Quizzes
+      </button>
+
       {/* Quiz Header */}
       <h2 className="text-3xl font-extrabold text-purple-300 mb-2">
         {quiz.title}
@@ -301,10 +311,9 @@ function Quiz({ quiz, onComplete, onBack }) {
               <label
                 key={i}
                 className={`block p-4 rounded-xl border cursor-pointer transition-all 
-                  ${
-                    answers[question.id] === opt
-                      ? "bg-purple-900/40 border-purple-500 shadow-lg shadow-purple-500/40"
-                      : "bg-gray-900 hover:bg-gray-800 border-gray-700"
+                  ${answers[question.id] === opt
+                    ? "bg-purple-900/40 border-purple-500 shadow-lg shadow-purple-500/40"
+                    : "bg-gray-900 hover:bg-gray-800 border-gray-700"
                   }`}
               >
                 <input
@@ -328,10 +337,9 @@ function Quiz({ quiz, onComplete, onBack }) {
               <label
                 key={index}
                 className={`flex flex-col items-center cursor-pointer p-2 rounded-lg transition 
-                  ${
-                    answers[question.id] === String(index + 1)
-                      ? "bg-purple-900/40 border border-purple-500 shadow"
-                      : "hover:bg-gray-800 border border-gray-700"
+                  ${answers[question.id] === String(index + 1)
+                    ? "bg-purple-900/40 border border-purple-500 shadow"
+                    : "hover:bg-gray-800 border border-gray-700"
                   }`}
               >
                 <input
@@ -351,12 +359,6 @@ function Quiz({ quiz, onComplete, onBack }) {
 
       {/* Navigation Buttons */}
       <div className="flex space-x-4 mt-6">
-        <button
-          className="px-5 py-2 bg-gray-700 text-gray-200 rounded-lg hover:bg-gray-600 transition-all"
-          onClick={onBack}
-        >
-          Back
-        </button>
         {currentIndex > 0 && (
           <button
             className="px-5 py-2 bg-gray-600 text-gray-200 rounded-lg hover:bg-gray-500 transition-all"
@@ -367,11 +369,10 @@ function Quiz({ quiz, onComplete, onBack }) {
         )}
         {currentIndex < quiz.questions.length - 1 ? (
           <button
-            className={`px-5 py-2 rounded-lg transition-all ${
-              answers[question.id]
+            className={`px-5 py-2 rounded-lg transition-all ${answers[question.id]
                 ? "bg-gradient-to-r from-pink-500 to-indigo-600 text-white hover:scale-105"
                 : "bg-gray-500 text-gray-300 cursor-not-allowed"
-            }`}
+              }`}
             onClick={handleNext}
             disabled={!answers[question.id]}
           >
@@ -379,11 +380,10 @@ function Quiz({ quiz, onComplete, onBack }) {
           </button>
         ) : (
           <button
-            className={`px-5 py-2 rounded-lg transition-all ${
-              answers[question.id]
+            className={`px-5 py-2 rounded-lg transition-all ${answers[question.id]
                 ? "bg-gradient-to-r from-green-500 to-cyan-600 text-white hover:scale-105"
                 : "bg-gray-500 text-gray-300 cursor-not-allowed"
-            }`}
+              }`}
             onClick={handleSubmit}
             disabled={!answers[question.id]}
           >
@@ -396,29 +396,14 @@ function Quiz({ quiz, onComplete, onBack }) {
 }
 
 // ====================== APP COMPONENT ======================
-// ====================== APP COMPONENT ======================
 function App() {
   const [currentQuiz, setCurrentQuiz] = useState(null);
   const [results, setResults] = useState([]);
-  const [showButton, setShowButton] = useState(false);
+  // const { setIsInQuiz } = useQuiz();
 
   const totalQuizzes = quizzes.length;
   const completedQuizzes = results.length;
   const progressPercent = (completedQuizzes / totalQuizzes) * 100;
-
-  // Back to top logic
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 200) setShowButton(true);
-      else setShowButton(false);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
 
   const handleStartQuiz = (quizId) => {
     const selectedQuiz = quizzes.find((q) => q.id === quizId);
@@ -431,6 +416,7 @@ function App() {
       return [...withoutCurrent, result];
     });
     setCurrentQuiz(null);
+    setIsInQuiz(false);
   };
 
   return (
@@ -439,7 +425,10 @@ function App() {
         <Quiz
           quiz={currentQuiz}
           onComplete={handleCompleteQuiz}
-          onBack={() => setCurrentQuiz(null)}
+          onBack={() => {
+            setCurrentQuiz(null);
+            setIsInQuiz(false);
+          }}
         />
       ) : (
         <div className="max-w-4xl mx-auto text-center">
@@ -496,9 +485,7 @@ function App() {
                 >
                   {/* Card Header with Icon */}
                   <div
-                    className={`p-6 flex justify-center items-center bg-gradient-to-r ${
-                      cardColors[quiz.id]
-                    }`}
+                    className={`p-6 flex justify-center items-center bg-gradient-to-r ${cardColors[quiz.id]}`}
                   >
                     {cardIcons[quiz.id]}
                   </div>
@@ -523,11 +510,10 @@ function App() {
                       </div>
                       <button
                         onClick={() => handleStartQuiz(quiz.id)}
-                        className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                          completed
+                        className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${completed
                             ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
                             : "bg-gradient-to-r from-pink-500 to-indigo-600 text-white hover:scale-105"
-                        }`}
+                          }`}
                       >
                         {completed ? "Retake" : "Start Quiz"}
                       </button>
@@ -538,7 +524,7 @@ function App() {
             })}
           </div>
 
-          {/* ✅ Removed Completed Results section here */}
+          {/* Results Link */}
           {progressPercent === 100 && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -557,25 +543,6 @@ function App() {
           )}
         </div>
       )}
-
-      {/* Back to Top Button */}
-      <AnimatePresence>
-        {showButton && (
-          <motion.button
-            onClick={scrollToTop}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            transition={{ duration: 0.3 }}
-            className="fixed bottom-6 left-6 z-50 rounded-full shadow-lg p-[0.4rem]
-             bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600
-             text-white hover:shadow-purple-500/40 hover:scale-110
-             transition-all duration-300 flex items-center justify-center"
-          >
-            <ChevronUp size={40} strokeWidth={2} color="white" />
-          </motion.button>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
