@@ -20,6 +20,8 @@ import Signup from "./pages/Signup";
 import Timeline from "./pages/Timeline";
 import Settings from "./pages/Settings";
 import Chatbot from "./pages/Chatbot";
+import Dashboard from "./pages/Dashboard";
+
 
 import { ChevronUp, ArrowLeft } from "lucide-react";
 import "leaflet/dist/leaflet.css";
@@ -29,7 +31,7 @@ function BackButton({ isInQuiz, setIsInQuiz }) {
   const location = useLocation();
   const navigate = useNavigate();
 
-  if (location.pathname === "/") return null;
+  if (location.pathname === "/Dashboard") return null;
 
   const handleBack = () => {
     if (isInQuiz) {
@@ -158,6 +160,10 @@ function App() {
               <Route path="/college-directory" element={<CollegeDirectory />} />
 
               {/* Protected Routes */}
+              <Route
+                path="/dashboard"
+                element={<ProtectedRoute><Dashboard /></ProtectedRoute>}
+              />
               <Route
                 path="/aptitude-test"
                 element={<ProtectedRoute><AptitudeTest /></ProtectedRoute>}

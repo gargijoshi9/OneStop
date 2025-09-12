@@ -23,7 +23,7 @@ function Login() {
       // On success, set user and navigate
       const userData = { email, name: email.split("@")[0] };
       setUser(userData);
-      navigate("/"); // Redirect to the Home page
+      navigate("/Dashboard"); // Redirect to the Dashboard page
 
     } catch (err) {
       setError(err.message || "Failed to log in. Please check your credentials.");

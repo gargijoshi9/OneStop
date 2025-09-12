@@ -101,8 +101,8 @@ function Signup() {
         address: formData.address,
       });
 
-      // Redirect to home page
-      navigate("/");
+      // Redirect to dashboard page
+      navigate("/Dashboard");
     } catch (error) {
       setError(error.message);
     } finally {
