@@ -6,6 +6,8 @@ import dotenv from "dotenv";
 import { MongoClient, ServerApiVersion } from "mongodb";
 
 dotenv.config();
+console.log("Loaded Gemini key?", process.env.REACT_APP_GEMINI_API_KEY ? "✅ Yes" : "❌ No");
+
 
 const app = express();
 app.use(cors());
