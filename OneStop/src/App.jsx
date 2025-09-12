@@ -4,10 +4,10 @@ import {
   Route,
   useLocation,
   useNavigate,
+  Navigate, // Import Navigate for protected routes
 } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-
-import { AuthProvider } from "./contexts/AuthContext";
+import { AuthProvider, useAuth } from "./contexts/AuthContext"; // Import useAuth
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
@@ -54,6 +54,14 @@ function BackButton({ isInQuiz, setIsInQuiz }) {
       <ArrowLeft size={28} strokeWidth={2.5} />
     </button>
   );
+}
+function ProtectedRoute({ children }) {
+    const { user } = useAuth();
+    if (!user) {
+        // If no user, redirect to the login page
+        return <Navigate to="/login" replace />;
+    }
+    return children;
 }
 
 function AppLayout() {
@@ -137,7 +145,40 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <AppLayout />
+        {/* 2. Main background color is set here for consistency */}
+        <div className="flex flex-col min-h-screen bg-black">
+          <Navbar />
+          <main className="flex-grow">
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/course-explorer" element={<CourseExplorer />} />
+              <Route path="/college-directory" element={<CollegeDirectory />} />
+
+              {/* Protected Routes */}
+              <Route
+                path="/aptitude-test"
+                element={<ProtectedRoute><AptitudeTest /></ProtectedRoute>}
+              />
+              <Route 
+                path="/result" 
+                element={<ProtectedRoute><Result /></ProtectedRoute>} 
+              />
+              <Route
+                path="/timeline"
+                element={<ProtectedRoute><Timeline /></ProtectedRoute>}
+              />
+              <Route
+                path="/settings"
+                element={<ProtectedRoute><Settings /></ProtectedRoute>}
+              />
+            </Routes>
+          </main>
+          <Footer />
+          <Chatbot />
+        </div>
       </Router>
     </AuthProvider>
   );
