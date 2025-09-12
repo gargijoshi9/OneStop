@@ -9,14 +9,59 @@ dotenv.config();
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
-// Load key from .env
+// Load keys from .env
 const API_KEY = process.env.REACT_APP_GEMINI_API_KEY;
 
-// I dont want to connect to DB for now
+//Basic Validation
+if (!process.env.MONGO_DB_URI) {
+  console.error("❌ Missing MONGO_URI in .env");
+  process.exit(1);
+}
 
-// This route is fine here as it doesn't depend on the DB connection
+// Create the Mongo client
+const client = new MongoClient(process.env.MONGO_DB_URI, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  },
+});
+
+let db, Courses;
+
+(async () => {
+  try {
+    await client.connect();
+    console.log("✅ Connected to MongoDB");
+    db = client.db(process.env.MONGO_DB_COLLECTION);
+    Courses = db.collection(process.env.COURSES);
+
+    // define routes that need Courses *inside* this block
+    app.get("/course-explorer", async (_req, res) => {
+      try {
+        const docs = await Courses.find({}).toArray();
+        res.json(docs);
+      } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+      }
+    });
+
+    // Start the server *only once* after the DB is ready
+    app.listen(3001, () => {
+      console.log("✅ Backend running on http://localhost:3001");
+    });
+
+  } catch (err) {
+    console.error("❌ Mongo connect error:", err);
+    process.exit(1);
+  }
+})();
+
+// Endpoint to handle content generation requests
 app.post("/generate-content", async (req, res) => {
   try {
     const { message } = req.body;
@@ -40,12 +85,11 @@ app.post("/generate-content", async (req, res) => {
         "No reply received",
     });
   } catch (error) {
-    console.error("Backend error:", error.response?.data || error.message);
+    console.error("❌ Backend error:", error.response?.data || error.message);
     res.status(500).json({ error: "Failed to generate content" });
   }
 });
 
 app.listen(3001, () => {
-  console.log("Server is running on port 3001");
+  console.log("✅ Backend running on http://localhost:3001");
 });
-

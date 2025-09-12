@@ -39,6 +39,10 @@ function Settings() {
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     if (file && file.type.startsWith("image/")) {
+      if (file.size > 10 * 1024 * 1024) { // 10 MB
+        alert("File size exceeds 10MB limit.");
+        return;
+      }
       setPhotoFile(file);
       setDetails((prev) => ({
         ...prev,
@@ -140,7 +144,7 @@ function Settings() {
                 </div>
               )}
             </div>
-            <div className="pt-2 text-white/60 text-xs">Max size: 2MB. PNG/JPG.</div>
+            <div className="pt-2 text-white/60 text-xs">Max size: 10MB. PNG/JPG.</div>
           </div>
 
           {/* Header */}
