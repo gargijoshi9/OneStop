@@ -1044,15 +1044,15 @@ function CourseExplorer() {
       </div>
       
       {/* Scroll to Top Button */}
-      {showButton && (
+      {/* {showButton && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-8 right-8 bg-purple-600 text-white p-3 rounded-full shadow-lg hover:bg-purple-700 transition-all duration-300 z-30 animate-bounce"
+          className="fixed bottom-8 left-8 bg-purple-600 text-white p-3 rounded-full shadow-lg hover:bg-purple-700 transition-all duration-300 z-30 animate-bounce"
           aria-label="Scroll to top"
         >
           <ArrowUpIcon className="h-6 w-6" />
         </button>
-      )}
+      )} */}
     </div>
   );
 }

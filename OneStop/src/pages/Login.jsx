@@ -8,28 +8,44 @@ function Login() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const { setUser } = useAuth();
+  // ✅ FIX: Destructure 'login' from the context, not 'setUser'
+  const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
-    setLoading(true);
     setError("");
-    try {
-      // Replace this with your actual API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      if (!email || !password) throw new Error("Please fill in all fields");
-      
-      // On success, set user and navigate
-      const userData = { email, name: email.split("@")[0] };
-      setUser(userData);
-      navigate("/Dashboard"); // Redirect to the Dashboard page
 
-    } catch (err) {
-      setError(err.message || "Failed to log in. Please check your credentials.");
-    } finally {
-      setLoading(false);
+    // Basic validation
+    if (!email || !password) {
+      setError("Please fill in all fields.");
+      return;
     }
+
+    setLoading(true);
+
+    // Simulate an API call for the fake login
+    setTimeout(() => {
+      try {
+        // On success, create a user object and call the login function
+        const userData = {
+          id: '123', // A fake user ID
+          email: email,
+          name: email.split("@")[0], // Create a name from the email
+        };
+
+        // ✅ FIX: Use the 'login' function provided by the context
+        login(userData);
+
+        // ✅ FIX: Navigate to the correct lowercase path
+        navigate("/dashboard");
+
+      } catch (err) {
+        setError("Failed to log in. Please check your credentials.");
+        setLoading(false);
+      }
+      // No need for finally block here, as setLoading is handled in success/error
+    }, 1000); // 1-second delay to simulate loading
   };
 
   return (

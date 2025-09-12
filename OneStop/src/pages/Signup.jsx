@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline"; // ✅ Import Heroicons
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
 function Signup() {
-  const { setUser } = useAuth();
+  // ✅ FIX: Destructure the 'login' function from the context
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -15,99 +16,75 @@ function Signup() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
-  const [showPassword, setShowPassword] = useState(false); // toggle for Password
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // toggle for Confirm Password
-
-  // ✅ State for password strength
-  const [passwordStrength, setPasswordStrength] = useState("");
-  const [passwordStrengthColor, setPasswordStrengthColor] = useState("");
-
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState({ text: '', color: '' });
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-
+    setFormData((prevState) => ({ ...prevState, [name]: value }));
     if (name === "password") {
       checkPasswordStrength(value);
     }
   };
 
-  // ✅ Password Strength Logic
   const checkPasswordStrength = (pw) => {
-    if (!pw || pw.length === 0) {
-      setPasswordStrength("");
-      setPasswordStrengthColor("");
+    if (!pw) {
+      setPasswordStrength({ text: '', color: '' });
       return;
     }
-
     const hasSpecialChar = /[^a-zA-Z0-9]/.test(pw);
-
-    if (pw.length <= 3 && !hasSpecialChar) {
-      setPasswordStrength("Weak");
-      setPasswordStrengthColor("text-red-500");
-    } else if (pw.length >= 4 && pw.length <= 7 && !hasSpecialChar) {
-      setPasswordStrength("Medium");
-      setPasswordStrengthColor("text-yellow-500");
-    } else if (pw.length >= 8 || hasSpecialChar) {
-      setPasswordStrength("Strong");
-      setPasswordStrengthColor("text-green-500");
+    if (pw.length >= 8 && hasSpecialChar) {
+      setPasswordStrength({ text: 'Strong', color: 'text-green-500' });
+    } else if (pw.length >= 6) {
+      setPasswordStrength({ text: 'Medium', color: 'text-yellow-500' });
+    } else {
+      setPasswordStrength({ text: 'Weak', color: 'text-red-500' });
     }
   };
 
-  const handleSignup = async (e) => {
+  const handleSignup = (e) => {
     e.preventDefault();
-    setLoading(true);
     setError("");
 
-    try {
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Validate inputs
-      if (
-        !formData.name ||
-        !formData.email ||
-        !formData.mobile ||
-        !formData.address ||
-        !formData.password ||
-        !formData.confirmPassword
-      ) {
-        throw new Error("Please fill in all fields");
-      }
-
-      if (formData.password !== formData.confirmPassword) {
-        throw new Error("Passwords do not match");
-      }
-
-      if (formData.password.length < 6) {
-        throw new Error("Password must be at least 6 characters long");
-      }
-
-      if (!/^\d{10}$/.test(formData.mobile)) {
-        throw new Error("Please enter a valid 10-digit mobile number");
-      }
-
-      // Set user in context
-      setUser({
-        name: formData.name,
-        email: formData.email,
-        mobile: formData.mobile,
-        address: formData.address,
-      });
-
-      // Redirect to dashboard page
-      navigate("/Dashboard");
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
+    if (Object.values(formData).some(field => field === '')) {
+      setError("Please fill in all fields");
+      return;
     }
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+    if (formData.password.length < 6) {
+      setError("Password must be at least 6 characters long");
+      return;
+    }
+    if (!/^\d{10}$/.test(formData.mobile)) {
+      setError("Please enter a valid 10-digit mobile number");
+      return;
+    }
+
+    setLoading(true);
+    
+    // Simulate API call delay
+    setTimeout(() => {
+        // Create the user object for our fake login
+        const newUser = {
+            id: Date.now().toString(), // Create a simple unique ID
+            name: formData.name,
+            email: formData.email,
+            mobile: formData.mobile,
+            address: formData.address,
+        };
+
+        // ✅ FIX: Use the 'login' function from the context
+        login(newUser);
+        
+        // ✅ FIX: Navigate to the correct lowercase path
+        navigate("/dashboard");
+
+    }, 1000);
   };
 
   return (
@@ -123,160 +100,68 @@ function Signup() {
           <h2 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
             Create an account
           </h2>
-          <p className="mt-2 text-white">
+          <p className="mt-2 text-white/70">
             Get personalized educational guidance
           </p>
         </div>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-500/20 text-red-300 rounded-lg border border-red-500/30">
+          <div className="mb-4 p-3 bg-red-500/20 text-red-300 rounded-lg border border-red-500/30 text-center">
             {error}
           </div>
         )}
 
         <form className="space-y-4" onSubmit={handleSignup}>
-          {/* Full Name */}
+          {/* Form fields remain the same */}
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-white/80">
-              Full Name
-            </label>
-            <input
-              id="name"
-              name="name"
-              type="text"
-              autoComplete="name"
-              required
-              value={formData.name}
-              onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg shadow-sm text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
+            <label htmlFor="name" className="block text-sm font-medium text-white/80">Full Name</label>
+            <input id="name" name="name" type="text" required value={formData.name} onChange={handleChange} className="mt-1 block w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500"/>
+          </div>
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-white/80">Email address</label>
+            <input id="email" name="email" type="email" required value={formData.email} onChange={handleChange} className="mt-1 block w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500"/>
+          </div>
+          <div>
+            <label htmlFor="mobile" className="block text-sm font-medium text-white/80">Mobile Number</label>
+            <input id="mobile" name="mobile" type="tel" required value={formData.mobile} onChange={handleChange} className="mt-1 block w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500"/>
+          </div>
+          <div>
+            <label htmlFor="address" className="block text-sm font-medium text-white/80">Address</label>
+            <textarea id="address" name="address" rows="2" required value={formData.address} onChange={handleChange} className="mt-1 block w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500"/>
+          </div>
+          {/* ✅ UNIFIED STYLES: Password fields now match the others */}
+          <div className="relative">
+            <label htmlFor="password" className="block text-sm font-medium text-white/80">Password</label>
+            <input id="password" name="password" type={showPassword ? "text" : "password"} required value={formData.password} onChange={handleChange} className="mt-1 block w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500"/>
+            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 top-6 pr-3 flex items-center text-white/60">
+                {showPassword ? <EyeSlashIcon className="h-5 w-5"/> : <EyeIcon className="h-5 w-5"/>}
+            </button>
+          </div>
+          {passwordStrength.text && <p className={`mt-1 text-xs ${passwordStrength.color}`}>Password strength: {passwordStrength.text}</p>}
+          <div className="relative">
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-white/80">Confirm Password</label>
+            <input id="confirmPassword" name="confirmPassword" type={showConfirmPassword ? "text" : "password"} required value={formData.confirmPassword} onChange={handleChange} className="mt-1 block w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500"/>
+             <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute inset-y-0 right-0 top-6 pr-3 flex items-center text-white/60">
+                {showConfirmPassword ? <EyeSlashIcon className="h-5 w-5"/> : <EyeIcon className="h-5 w-5"/>}
+            </button>
           </div>
 
-          {/* Email */}
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-white/80">
-              Email address
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              value={formData.email}
-              onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg shadow-sm text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-          </div>
-
-          {/* Mobile Number */}
-          <div>
-            <label htmlFor="mobile" className="block text-sm font-medium text-white/80">
-              Mobile Number
-            </label>
-            <input
-              id="mobile"
-              name="mobile"
-              type="tel"
-              autoComplete="tel"
-              required
-              value={formData.mobile}
-              onChange={handleChange}
-              placeholder="Enter 10-digit mobile number"
-              className="mt-1 block w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg shadow-sm text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-          </div>
-
-          {/* Address */}
-          <div>
-            <label htmlFor="address" className="block text-sm font-medium text-white/80">
-              Address
-            </label>
-            <textarea
-              id="address"
-              name="address"
-              rows="2"
-              required
-              value={formData.address}
-              onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg shadow-sm text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-          </div>
-
-          {/* Password */}
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-white/80">
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="new-password"
-              required
-              value={formData.password}
-              onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md shadow-sm text-white placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-            />
-            <p className="mt-1 text-xs text-gray-500">
-              Must be at least 6 characters long
-            </p>
-          </div>
-
-          {/* Confirm Password */}
-          <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-white/80">
-              Confirm Password
-            </label>
-            <input
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              autoComplete="new-password"
-              required
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md shadow-sm text-white placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-
-          {/* Terms */}
           <div className="flex items-center">
-            <input
-              id="accept_terms"
-              name="accept_terms"
-              type="checkbox"
-              required
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-white/30 rounded bg-white/10"
-            />
-            <label htmlFor="accept_terms" className="ml-2 block text-sm text-white/80">
-              I accept the{" "}
-              <a href="#" className="text-blue-400 hover:underline">
-                Terms and Conditions
-              </a>
-            </label>
+            <input id="accept_terms" name="accept_terms" type="checkbox" required className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-white/30 rounded bg-white/10"/>
+            <label htmlFor="accept_terms" className="ml-2 block text-sm text-white/80">I accept the <a href="#" className="text-purple-400 hover:underline">Terms and Conditions</a></label>
           </div>
 
-          {/* Submit button */}
           <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white  bg-gradient-to-r from-pink-500 to-indigo-600 text-white hover:scale-105 transition-transform duration-200 hover:from-indigo-600 hover:to-pink-600"
-            >
+            <button type="submit" disabled={loading} className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:scale-105 transition-transform duration-200 disabled:opacity-50">
               {loading ? "Creating account..." : "Sign up"}
             </button>
           </div>
         </form>
 
-        {/* Redirect to login */}
         <div className="mt-6 text-center">
           <p className="text-sm text-white/70">
             Already have an account?{" "}
-            <Link
-              to="/login"
-              className="font-medium text-blue-400 hover:text-blue-300"
-            >
+            <Link to="/login" className="font-medium text-purple-400 hover:text-purple-300">
               Log in
             </Link>
           </p>

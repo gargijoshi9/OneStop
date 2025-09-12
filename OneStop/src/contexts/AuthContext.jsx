@@ -9,16 +9,31 @@ export function AuthProvider({ children }) {
   });
 
   useEffect(() => {
-    if (user) localStorage.setItem("user", JSON.stringify(user));
-    else localStorage.removeItem("user");
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
+    } else {
+      localStorage.removeItem("user");
+    }
   }, [user]);
+
+  function login(userData) {
+    setUser(userData);
+  }
 
   function logout() {
     setUser(null);
   }
 
+
+  const value = {
+    user,
+    isAuthenticated: !!user,
+    login,
+    logout,
+  };
+
   return (
-    <AuthContext.Provider value={{ user, setUser, logout }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
